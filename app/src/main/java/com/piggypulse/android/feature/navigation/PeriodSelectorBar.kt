@@ -47,16 +47,16 @@ fun PeriodSelectorBar(
         ) {
             IconButton(
                 onClick = {
-                    if (currentIndex < periods.size - 1) {
-                        onSelectPeriod(periods[currentIndex + 1].id)
+                    if (currentIndex > 0) {
+                        onSelectPeriod(periods[currentIndex - 1].id)
                     }
                 },
-                enabled = currentIndex < periods.size - 1,
+                enabled = currentIndex > 0,
             ) {
                 Icon(
                     Icons.Default.ChevronLeft,
                     contentDescription = "Previous period",
-                    tint = if (currentIndex < periods.size - 1) PpTheme.colors.textSecondary
+                    tint = if (currentIndex > 0) PpTheme.colors.textSecondary
                     else PpTheme.colors.textTertiary,
                 )
             }
@@ -87,16 +87,16 @@ fun PeriodSelectorBar(
 
             IconButton(
                 onClick = {
-                    if (currentIndex > 0) {
-                        onSelectPeriod(periods[currentIndex - 1].id)
+                    if (currentIndex < periods.size - 1) {
+                        onSelectPeriod(periods[currentIndex + 1].id)
                     }
                 },
-                enabled = currentIndex > 0,
+                enabled = currentIndex < periods.size - 1,
             ) {
                 Icon(
                     Icons.Default.ChevronRight,
                     contentDescription = "Next period",
-                    tint = if (currentIndex > 0) PpTheme.colors.textSecondary
+                    tint = if (currentIndex < periods.size - 1) PpTheme.colors.textSecondary
                     else PpTheme.colors.textTertiary,
                 )
             }

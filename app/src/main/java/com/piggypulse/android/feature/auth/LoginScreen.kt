@@ -27,7 +27,6 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.app.AppState
 import com.piggypulse.android.app.LoginResult
@@ -50,6 +49,20 @@ fun LoginScreen(
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
+
+    fun doLogin() {
+        if (isLoading || email.isBlank() || password.isBlank()) return
+        scope.launch {
+            isLoading = true
+            errorMessage = null
+            when (val result = appState.login(email, password)) {
+                is LoginResult.Success -> onLoginSuccess()
+                is LoginResult.TwoFactorRequired -> onNavigateToTwoFactor(result.token)
+                is LoginResult.Error -> errorMessage = result.message
+            }
+            isLoading = false
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -96,17 +109,7 @@ fun LoginScreen(
             imeAction = ImeAction.Done,
             onDone = {
                 focusManager.clearFocus()
-                if (email.isNotBlank() && password.isNotBlank()) {
-                    scope.launch {
-                        isLoading = true
-                        when (val result = appState.login(email, password)) {
-                            is LoginResult.Success -> onLoginSuccess()
-                            is LoginResult.TwoFactorRequired -> onNavigateToTwoFactor(result.token)
-                            is LoginResult.Error -> errorMessage = result.message
-                        }
-                        isLoading = false
-                    }
-                }
+                doLogin()
             },
         )
 
@@ -123,17 +126,7 @@ fun LoginScreen(
 
         PpButton(
             text = if (isLoading) "Signing in..." else "Sign in",
-            onClick = {
-                scope.launch {
-                    isLoading = true
-                    when (val result = appState.login(email, password)) {
-                        is LoginResult.Success -> onLoginSuccess()
-                        is LoginResult.TwoFactorRequired -> onNavigateToTwoFactor(result.token)
-                        is LoginResult.Error -> errorMessage = result.message
-                    }
-                    isLoading = false
-                }
-            },
+            onClick = { doLogin() },
             modifier = Modifier.fillMaxWidth(),
             enabled = email.isNotBlank() && password.isNotBlank() && !isLoading,
         )

@@ -37,6 +37,7 @@ fun ForgotPasswordScreen(
     var email by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var isSent by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
     Column(
@@ -76,18 +77,30 @@ fun ForgotPasswordScreen(
                 onClick = {
                     scope.launch {
                         isLoading = true
-                        apiClient.request {
+                        errorMessage = null
+                        val result = apiClient.request {
                             apiClient.service.forgotPassword(
                                 request = ForgotPasswordRequest(email.trim().lowercase()),
                             )
                         }
-                        isSent = true
+                        result.fold(
+                            onSuccess = { isSent = true },
+                            onFailure = { errorMessage = "Failed to send reset link. Please try again." },
+                        )
                         isLoading = false
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = email.isNotBlank() && !isLoading,
             )
+            if (errorMessage != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = errorMessage!!,
+                    color = PpTheme.colors.destructive,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

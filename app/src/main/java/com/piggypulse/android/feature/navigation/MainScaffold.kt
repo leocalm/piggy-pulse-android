@@ -40,8 +40,10 @@ fun MainScaffold(
                 containerColor = PpTheme.colors.card,
             ) {
                 BottomNavItem.entries.forEach { item ->
-                    val itemRoute = item.route::class.qualifiedName
-                    val selected = currentRoute == itemRoute
+                    val selected = currentRoute?.contains(
+                        item.route::class.qualifiedName ?: "",
+                        ignoreCase = false,
+                    ) == true
                     NavigationBarItem(
                         selected = selected,
                         onClick = {
