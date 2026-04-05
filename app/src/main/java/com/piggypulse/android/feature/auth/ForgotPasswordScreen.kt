@@ -1,6 +1,5 @@
 package com.piggypulse.android.feature.auth
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,73 +42,81 @@ fun ForgotPasswordScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .imePadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Surface(
+        color = PpTheme.colors.background,
+        modifier = Modifier.fillMaxSize(),
     ) {
-        Text(
-            text = "Reset password",
-            style = MaterialTheme.typography.headlineMedium,
-            color = PpTheme.colors.textPrimary,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = if (isSent) "Check your email for a reset link."
-            else "Enter your email and we'll send you a reset link.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = PpTheme.colors.textSecondary,
-        )
-        Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            AuthHeader(tagline = "Reset your password")
 
-        if (!isSent) {
-            PpTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = "Email",
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            )
-            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
 
-            PpButton(
-                text = if (isLoading) "Sending..." else "Send reset link",
-                onClick = {
-                    scope.launch {
-                        isLoading = true
-                        errorMessage = null
-                        val result = apiClient.request {
-                            apiClient.service.forgotPassword(
-                                request = ForgotPasswordRequest(email.trim().lowercase()),
-                            )
-                        }
-                        result.fold(
-                            onSuccess = { isSent = true },
-                            onFailure = { errorMessage = "Failed to send reset link. Please try again." },
-                        )
-                        isLoading = false
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = email.isNotBlank() && !isLoading,
-            )
-            if (errorMessage != null) {
-                Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = errorMessage!!,
-                    color = PpTheme.colors.destructive,
-                    style = MaterialTheme.typography.bodySmall,
+                    text = if (isSent) "Check your email for a reset link."
+                    else "Enter your email and we'll send you a reset link.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PpTheme.colors.textSecondary,
                 )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                if (!isSent) {
+                    PpTextField(
+                        value = email,
+                        onValueChange = { email = it; errorMessage = null },
+                        label = "Email",
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    PpButton(
+                        text = if (isLoading) "Sending..." else "Send reset link",
+                        onClick = {
+                            scope.launch {
+                                isLoading = true
+                                errorMessage = null
+                                val result = apiClient.request {
+                                    apiClient.service.forgotPassword(
+                                        request = ForgotPasswordRequest(email.trim().lowercase()),
+                                    )
+                                }
+                                result.fold(
+                                    onSuccess = { isSent = true },
+                                    onFailure = { errorMessage = "Failed to send reset link. Please try again." },
+                                )
+                                isLoading = false
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = email.isNotBlank() && !isLoading,
+                    )
+                    if (errorMessage != null) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = errorMessage!!,
+                            color = PpTheme.colors.destructive,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                TextButton(onClick = onNavigateBack) {
+                    Text("Back to sign in", color = PpTheme.colors.primary)
+                }
             }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        TextButton(onClick = onNavigateBack) {
-            Text("Back to sign in", color = PpTheme.colors.primary)
         }
     }
 }
