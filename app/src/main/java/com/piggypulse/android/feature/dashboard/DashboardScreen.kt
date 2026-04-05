@@ -27,7 +27,7 @@ import com.piggypulse.android.feature.dashboard.widgets.RecentTransactionsWidget
 import com.piggypulse.android.feature.dashboard.widgets.SpendingTrendWidget
 import com.piggypulse.android.feature.dashboard.widgets.SubscriptionsWidget
 import com.piggypulse.android.feature.dashboard.widgets.TopVendorsWidget
-import com.piggypulse.android.feature.dashboard.widgets.VariableCategoriesWidget
+import com.piggypulse.android.feature.dashboard.widgets.FixedCategoriesWidget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,16 +121,16 @@ fun DashboardScreen(
                 }
 
                 // Top Vendors
-                dashboard.topVendors?.let { vendors ->
+                if (dashboard.topVendors.isNotEmpty()) {
                     item(key = "top_vendors") {
-                        TopVendorsWidget(data = vendors, currencyCode = currencyCode)
+                        TopVendorsWidget(vendors = dashboard.topVendors, currencyCode = currencyCode)
                     }
                 }
 
-                // Variable Categories
-                dashboard.variableCategories?.let { vc ->
-                    item(key = "variable_categories") {
-                        VariableCategoriesWidget(data = vc, currencyCode = currencyCode)
+                // Fixed Categories
+                if (dashboard.fixedCategories.isNotEmpty()) {
+                    item(key = "fixed_categories") {
+                        FixedCategoriesWidget(categories = dashboard.fixedCategories, currencyCode = currencyCode)
                     }
                 }
 

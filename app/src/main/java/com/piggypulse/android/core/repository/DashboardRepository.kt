@@ -2,12 +2,11 @@ package com.piggypulse.android.core.repository
 
 import com.piggypulse.android.core.model.DashboardCashFlow
 import com.piggypulse.android.core.model.DashboardCurrentPeriod
-import com.piggypulse.android.core.model.DashboardFixedCategories
+import com.piggypulse.android.core.model.DashboardFixedCategoryItem
 import com.piggypulse.android.core.model.DashboardNetPosition
-import com.piggypulse.android.core.model.DashboardVariableCategories
 import com.piggypulse.android.core.model.DashboardSpendingTrend
 import com.piggypulse.android.core.model.DashboardSubscriptions
-import com.piggypulse.android.core.model.DashboardTopVendors
+import com.piggypulse.android.core.model.DashboardTopVendorItem
 import com.piggypulse.android.core.model.Transaction
 import com.piggypulse.android.core.network.ApiClient
 import kotlinx.coroutines.async
@@ -20,10 +19,9 @@ data class DashboardData(
     val netPosition: DashboardNetPosition? = null,
     val cashFlow: DashboardCashFlow? = null,
     val spendingTrend: DashboardSpendingTrend? = null,
-    val topVendors: DashboardTopVendors? = null,
+    val topVendors: List<DashboardTopVendorItem> = emptyList(),
     val subscriptions: DashboardSubscriptions? = null,
-    val fixedCategories: DashboardFixedCategories? = null,
-    val variableCategories: DashboardVariableCategories? = null,
+    val fixedCategories: List<DashboardFixedCategoryItem> = emptyList(),
     val recentTransactions: List<Transaction> = emptyList(),
 )
 
@@ -47,22 +45,20 @@ class DashboardRepository @Inject constructor(
                     apiClient.request { apiClient.service.getDashboardSpendingTrend(periodId) }.getOrNull()
                 }
                 val topVendors = async {
-                    apiClient.request { apiClient.service.getDashboardTopVendors(periodId) }.getOrNull()
+                    apiClient.request { apiClient.service.getDashboardTopVendors(periodId) }
+                        .getOrElse { emptyList() }
                 }
                 val subs = async {
                     apiClient.request { apiClient.service.getDashboardSubscriptions(periodId) }.getOrNull()
                 }
                 val fixed = async {
-                    apiClient.request { apiClient.service.getDashboardFixedCategories(periodId) }.getOrNull()
+                    apiClient.request { apiClient.service.getDashboardFixedCategories(periodId) }
+                        .getOrElse { emptyList() }
                 }
                 val recent = async {
                     apiClient.request { apiClient.service.getRecentTransactions(periodId, 7) }
                         .map { it.data }.getOrElse { emptyList() }
                 }
-
-                // Variable categories data is not a dedicated endpoint —
-                // it will be populated when the categories overview endpoint is added.
-                // For now, this field stays null.
 
                 Result.success(
                     DashboardData(
@@ -73,7 +69,6 @@ class DashboardRepository @Inject constructor(
                         topVendors = topVendors.await(),
                         subscriptions = subs.await(),
                         fixedCategories = fixed.await(),
-                        variableCategories = null,
                         recentTransactions = recent.await(),
                     ),
                 )

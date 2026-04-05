@@ -4,35 +4,23 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DashboardCurrentPeriod(
-    val periodName: String? = null,
-    val startDate: String? = null,
-    val endDate: String? = null,
-    val remainingDays: Int? = null,
-    val totalSpent: Long? = null,
-    val totalBudgeted: Long? = null,
-    val expectedIncome: Long? = null,
-    val projectedSpend: Long? = null,
-    val percentTimeElapsed: Double? = null,
-    val percentBudgetUsed: Double? = null,
+    val spent: Long = 0,
+    val target: Long = 0,
+    val incomeTarget: Long = 0,
+    val daysRemaining: Long = 0,
+    val daysInPeriod: Long = 0,
+    val projectedSpend: Long = 0,
+    val dailySpend: List<Long> = emptyList(),
 )
 
 @Serializable
 data class DashboardNetPosition(
     val total: Long = 0,
-    val liquid: Long = 0,
-    val protected_: Long = 0,
-    val debt: Long = 0,
-    val periodChange: Long? = null,
-    val accounts: List<NetPositionAccount> = emptyList(),
-)
-
-@Serializable
-data class NetPositionAccount(
-    val id: String,
-    val name: String,
-    val type: String,
-    val color: String,
-    val balance: Long,
+    val differenceThisPeriod: Long = 0,
+    val numberOfAccounts: Long = 0,
+    val liquidAmount: Long = 0,
+    val protectedAmount: Long = 0,
+    val debtAmount: Long = 0,
 )
 
 @Serializable
@@ -45,64 +33,48 @@ data class DashboardCashFlow(
 @Serializable
 data class DashboardSpendingTrend(
     val periods: List<SpendingTrendItem> = emptyList(),
-    val average: Long? = null,
+    val periodAverage: Long = 0,
 )
 
 @Serializable
 data class SpendingTrendItem(
+    val periodId: String,
     val periodName: String,
     val totalSpent: Long,
 )
 
 @Serializable
-data class DashboardTopVendors(
-    val vendors: List<TopVendorItem> = emptyList(),
+data class DashboardTopVendorItem(
+    val vendorId: String,
+    val vendorName: String,
+    val totalSpent: Long,
+    val transactionCount: Long,
 )
 
 @Serializable
-data class TopVendorItem(
+data class DashboardSubscriptionItem(
     val id: String,
     val name: String,
-    val totalSpent: Long,
-    val transactionCount: Int,
+    val billingAmount: Long,
+    val billingCycle: String,
+    val nextChargeDate: String,
+    val displayStatus: String,
 )
 
 @Serializable
 data class DashboardSubscriptions(
-    val activeCount: Int = 0,
+    val activeCount: Long = 0,
     val monthlyTotal: Long = 0,
     val yearlyTotal: Long = 0,
-    val upcoming: List<UpcomingCharge> = emptyList(),
+    val subscriptions: List<DashboardSubscriptionItem> = emptyList(),
 )
 
 @Serializable
-data class DashboardVariableCategories(
-    val categories: List<VariableCategoryItem> = emptyList(),
-    val totalSpent: Long = 0,
-    val totalBudgeted: Long = 0,
-)
-
-@Serializable
-data class VariableCategoryItem(
-    val id: String,
-    val name: String,
-    val icon: String? = null,
+data class DashboardFixedCategoryItem(
+    val categoryId: String,
+    val categoryName: String,
+    val categoryIcon: String,
+    val status: String,
     val spent: Long,
     val budgeted: Long,
 )
-
-@Serializable
-data class DashboardFixedCategories(
-    val categories: List<FixedCategoryItem> = emptyList(),
-)
-
-@Serializable
-data class FixedCategoryItem(
-    val id: String,
-    val name: String,
-    val icon: String? = null,
-    val spent: Long,
-    val budgeted: Long,
-    val status: String? = null,
-)
-

@@ -47,6 +47,7 @@ import com.piggypulse.android.design.theme.PpTheme
 
 @Composable
 fun AccountsScreen(
+    periodId: String?,
     currencyCode: String,
     onNavigateToDetail: (String) -> Unit,
     viewModel: AccountsViewModel = hiltViewModel(),
@@ -55,15 +56,15 @@ fun AccountsScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val showForm by viewModel.showForm.collectAsState()
     val editingAccount by viewModel.editingAccount.collectAsState()
-    val netPosition by remember {
+    val netPosition by remember(accounts) {
         derivedStateOf { viewModel.netPosition }
     }
-    val groupedAccounts by remember {
+    val groupedAccounts by remember(accounts) {
         derivedStateOf { viewModel.groupedAccounts }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.load()
+    LaunchedEffect(periodId) {
+        viewModel.load(periodId)
     }
 
     Scaffold(
