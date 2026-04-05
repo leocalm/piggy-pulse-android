@@ -6,6 +6,7 @@ import com.piggypulse.android.core.model.AccountResponse
 import com.piggypulse.android.core.model.CancelSubscriptionRequest
 import com.piggypulse.android.core.model.CategoryDetail
 import com.piggypulse.android.core.model.CategoryOptionList
+import com.piggypulse.android.core.model.CategoryOverviewResponse
 import com.piggypulse.android.core.model.CategoryResponse
 import com.piggypulse.android.core.model.ChangePasswordRequest
 import com.piggypulse.android.core.model.CreateAccountRequest
@@ -204,6 +205,11 @@ interface ApiService {
         @Query("cursor") cursor: String? = null,
         @Query("limit") limit: Int? = null,
     ): Response<PaginatedCategories>
+
+    @GET("categories/overview")
+    suspend fun getCategoriesOverview(
+        @Query("periodId") periodId: String,
+    ): Response<CategoryOverviewResponse>
 
     @GET("categories/{id}")
     suspend fun getCategoryDetail(

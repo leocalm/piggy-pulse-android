@@ -56,6 +56,37 @@ data class UpdateCategoryRequest(
 )
 
 @Serializable
+data class CategorySummaryItem(
+    val id: String,
+    val name: String,
+    val type: String,
+    val icon: String,
+    val color: String,
+    val status: String,
+    val behavior: String? = null,
+    val actual: Long = 0,
+    val projected: Long = 0,
+    val budgeted: Long? = null,
+    val variance: Long = 0,
+)
+
+@Serializable
+data class CategoryOverviewSummary(
+    val periodName: String,
+    val periodElapsedPercent: Int = 0,
+    val totalSpent: Long = 0,
+    val totalBudgeted: Long? = null,
+    val totalBudgetedIncoming: Long? = null,
+    val variance: Long = 0,
+)
+
+@Serializable
+data class CategoryOverviewResponse(
+    val summary: CategoryOverviewSummary,
+    val categories: List<CategorySummaryItem>,
+)
+
+@Serializable
 data class CategoryResponse(
     val id: String,
     val name: String,
