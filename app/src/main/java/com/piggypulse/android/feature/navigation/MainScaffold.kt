@@ -185,13 +185,6 @@ fun MainScaffold(
                         onNavigateBack = { navController.popBackStack() },
                     )
                 }
-                composable<Route.Overlays> {
-                    val currentUser by appState.currentUser.collectAsState()
-                    OverlaysScreen(
-                        currencyCode = currentUser?.currency ?: "EUR",
-                        onNavigateBack = { navController.popBackStack() },
-                    )
-                }
                 composable<Route.Periods> {
                     PeriodsScreen(
                         onNavigateBack = { navController.popBackStack() },
@@ -264,13 +257,6 @@ private fun MoreScreen(
                 icon = Icons.Default.Repeat,
                 label = "Subscriptions",
                 onClick = { onNavigate(Route.Subscriptions) },
-            )
-        }
-        item {
-            MoreMenuItem(
-                icon = Icons.Default.Layers,
-                label = "Overlays",
-                onClick = { onNavigate(Route.Overlays) },
             )
         }
         item {
