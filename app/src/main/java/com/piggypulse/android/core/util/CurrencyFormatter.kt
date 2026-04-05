@@ -3,6 +3,9 @@ package com.piggypulse.android.core.util
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
+import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.roundToLong
 
 object CurrencyFormatter {
 
@@ -20,7 +23,7 @@ object CurrencyFormatter {
         }
 
         val decimalPlaces = currency.defaultFractionDigits
-        val amount = amountInCents.toDouble() / Math.pow(10.0, decimalPlaces.toDouble())
+        val amount = amountInCents.toDouble() / 10.0.pow(decimalPlaces)
 
         if (compact) {
             return formatCompact(amount, currency, locale, showSymbol)
@@ -43,11 +46,11 @@ object CurrencyFormatter {
     }
 
     fun centsToDisplay(amountInCents: Long, decimalPlaces: Int = 2): Double {
-        return amountInCents.toDouble() / Math.pow(10.0, decimalPlaces.toDouble())
+        return amountInCents.toDouble() / 10.0.pow(decimalPlaces)
     }
 
     fun displayToCents(displayValue: Double, decimalPlaces: Int = 2): Long {
-        return (displayValue * Math.pow(10.0, decimalPlaces.toDouble())).toLong()
+        return (displayValue * 10.0.pow(decimalPlaces)).roundToLong()
     }
 
     private fun formatCompact(
@@ -56,7 +59,7 @@ object CurrencyFormatter {
         locale: Locale,
         showSymbol: Boolean,
     ): String {
-        val absAmount = Math.abs(amount)
+        val absAmount = abs(amount)
         val (scaled, suffix) = when {
             absAmount >= 1_000_000 -> (amount / 1_000_000) to "M"
             absAmount >= 1_000 -> (amount / 1_000) to "K"
@@ -76,6 +79,18 @@ object CurrencyFormatter {
             }.format(amount)
         }
 
-        return if (showSymbol) "${currency.symbol}$formatted" else formatted
+        if (!showSymbol) return formatted
+
+        // Determine whether the locale places the currency symbol before or after the number.
+        val currencyFormatter = NumberFormat.getCurrencyInstance(locale).apply {
+            this.currency = currency
+        }
+        val sample = currencyFormatter.format(1.0)
+        val symbol = currency.getSymbol(locale)
+        return if (sample.startsWith(symbol) || sample.startsWith(currency.currencyCode)) {
+            "$symbol$formatted"
+        } else {
+            "$formatted$symbol"
+        }
     }
 }

@@ -26,6 +26,7 @@ data class KebabMenuItem(
 fun PpKebabMenu(
     items: List<KebabMenuItem>,
     modifier: Modifier = Modifier,
+    contentDescription: String = "More actions",
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -35,7 +36,7 @@ fun PpKebabMenu(
     ) {
         Icon(
             imageVector = Icons.Default.MoreVert,
-            contentDescription = "Actions",
+            contentDescription = contentDescription,
             tint = PpTheme.colors.textSecondary,
         )
     }
