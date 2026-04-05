@@ -44,8 +44,10 @@ import com.piggypulse.android.design.component.PpEmptyState
 import com.piggypulse.android.design.theme.PpTheme
 import com.piggypulse.android.feature.accounts.AccountDetailScreen
 import com.piggypulse.android.feature.accounts.AccountsScreen
+import androidx.compose.material.icons.filled.Layers
 import com.piggypulse.android.feature.categories.CategoriesScreen
 import com.piggypulse.android.feature.dashboard.DashboardScreen
+import com.piggypulse.android.feature.overlays.OverlaysScreen
 import com.piggypulse.android.feature.periods.PeriodsScreen
 import com.piggypulse.android.feature.settings.SettingsScreen
 import com.piggypulse.android.feature.subscriptions.SubscriptionsScreen
@@ -179,6 +181,12 @@ fun MainScaffold(
                         onNavigateToDetail = { id -> navController.navigate(Route.SubscriptionDetail(id)) },
                     )
                 }
+                composable<Route.Overlays> {
+                    val currentUser by appState.currentUser.collectAsState()
+                    OverlaysScreen(
+                        currencyCode = currentUser?.currency ?: "EUR",
+                    )
+                }
                 composable<Route.Periods> {
                     PeriodsScreen()
                 }
@@ -247,6 +255,13 @@ private fun MoreScreen(
                 icon = Icons.Default.Repeat,
                 label = "Subscriptions",
                 onClick = { onNavigate(Route.Subscriptions) },
+            )
+        }
+        item {
+            MoreMenuItem(
+                icon = Icons.Default.Layers,
+                label = "Overlays",
+                onClick = { onNavigate(Route.Overlays) },
             )
         }
         item {

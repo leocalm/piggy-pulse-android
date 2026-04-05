@@ -19,11 +19,14 @@ import com.piggypulse.android.core.model.DashboardSpendingTrend
 import com.piggypulse.android.core.model.DashboardSubscriptions
 import com.piggypulse.android.core.model.DashboardTopVendors
 import com.piggypulse.android.core.model.CreateCategoryRequest
+import com.piggypulse.android.core.model.CreateOverlayRequest
 import com.piggypulse.android.core.model.CreateSubscriptionRequest
 import com.piggypulse.android.core.model.CreateVendorRequest
 import com.piggypulse.android.core.model.MergeVendorRequest
 import com.piggypulse.android.core.model.OnboardingCompleteResponse
 import com.piggypulse.android.core.model.OnboardingStatusResponse
+import com.piggypulse.android.core.model.OverlayResponse
+import com.piggypulse.android.core.model.PaginatedOverlays
 import com.piggypulse.android.core.model.PaginatedAccountSummaries
 import com.piggypulse.android.core.model.PaginatedCategories
 import com.piggypulse.android.core.model.PaginatedTargets
@@ -38,6 +41,7 @@ import com.piggypulse.android.core.model.SubscriptionResponse
 import com.piggypulse.android.core.model.UpdateAccountRequest
 import com.piggypulse.android.core.model.TargetResponse
 import com.piggypulse.android.core.model.UpdateCategoryRequest
+import com.piggypulse.android.core.model.UpdateOverlayRequest
 import com.piggypulse.android.core.model.UpdatePeriodRequest
 import com.piggypulse.android.core.model.UpdatePreferencesRequest
 import com.piggypulse.android.core.model.UpdateProfileRequest
@@ -411,6 +415,29 @@ interface ApiService {
 
     @DELETE("settings/account")
     suspend fun deleteUserAccount(): Response<Unit>
+
+    // Overlays
+    @GET("overlays")
+    suspend fun getOverlays(
+        @Query("cursor") cursor: String? = null,
+        @Query("limit") limit: Int? = null,
+    ): Response<PaginatedOverlays>
+
+    @POST("overlays")
+    suspend fun createOverlay(
+        @Body request: CreateOverlayRequest,
+    ): Response<OverlayResponse>
+
+    @PUT("overlays/{id}")
+    suspend fun updateOverlay(
+        @Path("id") id: String,
+        @Body request: UpdateOverlayRequest,
+    ): Response<OverlayResponse>
+
+    @DELETE("overlays/{id}")
+    suspend fun deleteOverlay(
+        @Path("id") id: String,
+    ): Response<Unit>
 
     // Onboarding
     @GET("onboarding/status")

@@ -25,6 +25,7 @@ sealed interface Route {
     @Serializable data object Periods : Route
     @Serializable data object Targets : Route
     @Serializable data object Settings : Route
+    @Serializable data object Overlays : Route
 
     // Detail screens
     @Serializable data class AccountDetail(val id: String) : Route
