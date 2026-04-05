@@ -5,6 +5,7 @@ import com.piggypulse.android.core.model.ForgotPasswordRequest
 import com.piggypulse.android.core.model.ForgotPasswordResponse
 import com.piggypulse.android.core.model.LoginRequest
 import com.piggypulse.android.core.model.LoginResponse
+import com.piggypulse.android.core.model.PaginatedPeriods
 import com.piggypulse.android.core.model.RegisterRequest
 import com.piggypulse.android.core.model.TwoFactorRequest
 import com.piggypulse.android.core.model.User
@@ -13,6 +14,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -52,4 +54,11 @@ interface ApiService {
     suspend fun changePassword(
         @Body request: ChangePasswordRequest,
     ): Response<Unit>
+
+    // Periods
+    @GET("periods")
+    suspend fun getPeriods(
+        @Query("cursor") cursor: String? = null,
+        @Query("limit") limit: Int? = null,
+    ): Response<PaginatedPeriods>
 }
