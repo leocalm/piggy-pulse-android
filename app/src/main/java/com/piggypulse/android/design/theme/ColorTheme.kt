@@ -1,0 +1,110 @@
+package com.piggypulse.android.design.theme
+
+import androidx.compose.ui.graphics.Color
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+
+enum class ColorTheme(
+    val label: String,
+    val primary: Color,
+    val secondary: Color,
+    val tertiary: Color,
+    val gradient: Pair<Color, Color>,
+) {
+    Nebula(
+        label = "Nebula",
+        primary = Color(0xFF8B7EC8),
+        secondary = Color(0xFFC48BA0),
+        tertiary = Color(0xFF7CA8C4),
+        gradient = Color(0xFF8B7EC8) to Color(0xFFC48BA0),
+    ),
+    Sunrise(
+        label = "Sunrise",
+        primary = Color(0xFF4A7CFF),
+        secondary = Color(0xFFF0A25C),
+        tertiary = Color(0xFF9B8AE0),
+        gradient = Color(0xFF4A7CFF) to Color(0xFFF0A25C),
+    ),
+    Neon(
+        label = "Electric Neon",
+        primary = Color(0xFF00F0FF),
+        secondary = Color(0xFFFF00E5),
+        tertiary = Color(0xFFB8FF00),
+        gradient = Color(0xFF00F0FF) to Color(0xFFFF00E5),
+    ),
+    Tropical(
+        label = "Tropical",
+        primary = Color(0xFFFF6B6B),
+        secondary = Color(0xFF00CCB3),
+        tertiary = Color(0xFFFFC800),
+        gradient = Color(0xFFFF6B6B) to Color(0xFF00CCB3),
+    ),
+    CandyPop(
+        label = "Candy Pop",
+        primary = Color(0xFFFF479C),
+        secondary = Color(0xFF00C2FF),
+        tertiary = Color(0xFFFFE100),
+        gradient = Color(0xFFFF479C) to Color(0xFF00C2FF),
+    ),
+    Moonlit(
+        label = "Moonlit",
+        primary = Color(0xFF8B7EC8),
+        secondary = Color(0xFFA8B4C4),
+        tertiary = Color(0xFF7AADCF),
+        gradient = Color(0xFF8B7EC8) to Color(0xFFA8B4C4),
+    );
+
+    val dataPalette: List<Color> by lazy { buildDataPalette(listOf(primary, secondary, tertiary)) }
+}
+
+val Destructive = Color(0xFFC4786A)
+
+// -- Data palette generation (ported from web tokens.ts) --
+
+private fun colorToHsl(color: Color): Triple<Int, Int, Int> {
+    val r = color.red
+    val g = color.green
+    val b = color.blue
+    val maxC = max(r, max(g, b))
+    val minC = min(r, min(g, b))
+    val l = (maxC + minC) / 2f
+
+    if (maxC == minC) return Triple(0, 0, (l * 100).roundToInt())
+
+    val d = maxC - minC
+    val s = if (l > 0.5f) d / (2f - maxC - minC) else d / (maxC + minC)
+    val h = when (maxC) {
+        r -> ((g - b) / d + (if (g < b) 6f else 0f)) / 6f
+        g -> ((b - r) / d + 2f) / 6f
+        else -> ((r - g) / d + 4f) / 6f
+    }
+    return Triple((h * 360).roundToInt(), (s * 100).roundToInt(), (l * 100).roundToInt())
+}
+
+private fun hslToColor(h: Int, s: Int, l: Int): Color {
+    val sN = s / 100f
+    val lN = l / 100f
+    val a = sN * min(lN, 1f - lN)
+    fun f(n: Int): Float {
+        val k = (n + h / 30f) % 12f
+        return lN - a * max(min(k - 3f, min(9f - k, 1f)), -1f)
+    }
+    return Color(f(0), f(8), f(4))
+}
+
+private fun tint(color: Color, lightnessOffset: Int): Color {
+    val (h, s, l) = colorToHsl(color)
+    return hslToColor(h, s, (l + lightnessOffset).coerceIn(0, 100))
+}
+
+private fun buildDataPalette(accents: List<Color>): List<Color> {
+    val palette = accents.toMutableList()
+    var idx = 0
+    while (palette.size < 8) {
+        palette.add(tint(accents[idx % accents.size], 15 + idx * 5))
+        idx++
+    }
+    return palette
+}
