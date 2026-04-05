@@ -22,16 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.piggypulse.android.app.AppState
-import com.piggypulse.android.ui.theme.PiggyPulseTheme
+import com.piggypulse.android.design.theme.PiggyPulseTheme
+import com.piggypulse.android.design.theme.PpTheme
+import com.piggypulse.android.design.theme.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var themeManager: ThemeManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PiggyPulseTheme {
+            PiggyPulseTheme(themeManager = themeManager) {
                 PiggyPulseRoot()
             }
         }
@@ -46,7 +53,10 @@ fun PiggyPulseRoot(
     val isAuthenticated by appState.isAuthenticated.collectAsState()
     val currentUser by appState.currentUser.collectAsState()
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = PpTheme.colors.background,
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -55,24 +65,26 @@ fun PiggyPulseRoot(
         ) {
             when {
                 isInitializing -> {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = PpTheme.colors.primary)
                 }
                 isAuthenticated -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "Welcome, ${currentUser?.name ?: "User"}!",
                             style = MaterialTheme.typography.headlineMedium,
+                            color = PpTheme.colors.textPrimary,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = currentUser?.email ?: "",
                             style = MaterialTheme.typography.bodyMedium,
+                            color = PpTheme.colors.textSecondary,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Dashboard coming in M3",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = PpTheme.colors.textTertiary,
                         )
                     }
                 }
@@ -80,6 +92,7 @@ fun PiggyPulseRoot(
                     Text(
                         text = "Login screen coming in M3",
                         style = MaterialTheme.typography.bodyLarge,
+                        color = PpTheme.colors.textPrimary,
                     )
                 }
             }
