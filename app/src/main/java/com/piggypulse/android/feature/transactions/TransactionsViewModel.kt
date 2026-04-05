@@ -9,9 +9,13 @@ import com.piggypulse.android.core.model.TransactionFilterOptions
 import com.piggypulse.android.core.model.UpdateTransactionRequest
 import com.piggypulse.android.core.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,21 +57,34 @@ class TransactionsViewModel @Inject constructor(
     private val _showForm = MutableStateFlow(false)
     val showForm: StateFlow<Boolean> = _showForm.asStateFlow()
 
+    // Exposed as StateFlow so the badge count updates reactively in the UI.
+    val activeFilterCount: StateFlow<Int> = combine(
+        _selectedAccountIds,
+        _selectedCategoryIds,
+        _selectedVendorIds,
+    ) { accounts, categories, vendors ->
+        accounts.size + categories.size + vendors.size
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
     private var nextCursor: String? = null
     private var currentPeriodId: String? = null
 
-    val activeFilterCount: Int
-        get() = _selectedAccountIds.value.size +
-            _selectedCategoryIds.value.size +
-            _selectedVendorIds.value.size
+    // Tracks the current first-page load job so rapid re-loads cancel the prior in-flight request.
+    private var loadJob: Job? = null
+
+    val hasMore: Boolean get() = nextCursor != null
 
     fun load(periodId: String) {
         currentPeriodId = periodId
+
+        // Cancel any in-flight first-page load to avoid stale results racing back.
+        loadJob?.cancel()
+
         nextCursor = null
         _isLoading.value = true
         _errorMessage.value = null
 
-        viewModelScope.launch {
+        loadJob = viewModelScope.launch {
             repository.fetchTransactions(
                 periodId = periodId,
                 direction = _selectedDirection.value.queryValue,
@@ -177,6 +194,4 @@ class TransactionsViewModel @Inject constructor(
             }
         }
     }
-
-    val hasMore: Boolean get() = nextCursor != null
 }

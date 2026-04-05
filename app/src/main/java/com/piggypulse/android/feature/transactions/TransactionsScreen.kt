@@ -66,6 +66,7 @@ fun TransactionsScreen(
     val selectedVendorIds by viewModel.selectedVendorIds.collectAsState()
     val showForm by viewModel.showForm.collectAsState()
     val editingTransaction by viewModel.editingTransaction.collectAsState()
+    val activeFilterCount by viewModel.activeFilterCount.collectAsState()
     var showFilters by remember { mutableStateOf(false) }
 
     LaunchedEffect(periodId) {
@@ -81,13 +82,12 @@ fun TransactionsScreen(
             PpTopBar(
                 title = "Transactions",
                 actions = {
-                    val filterCount = viewModel.activeFilterCount
                     IconButton(onClick = { showFilters = true }) {
-                        if (filterCount > 0) {
+                        if (activeFilterCount > 0) {
                             BadgedBox(
                                 badge = {
                                     Badge(containerColor = PpTheme.colors.primary) {
-                                        Text(filterCount.toString(), color = Color.White)
+                                        Text(activeFilterCount.toString(), color = Color.White)
                                     }
                                 },
                             ) {
@@ -212,9 +212,9 @@ private fun TransactionList(
     // Detect reaching end of list for infinite scroll
     val shouldLoadMore by remember {
         derivedStateOf {
-            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val totalItems = listState.layoutInfo.totalItemsCount
-            lastVisibleItem >= totalItems - 3 && hasMore && !isLoadingMore
+            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+            totalItems > 0 && lastVisibleItem >= totalItems - 3 && hasMore && !isLoadingMore
         }
     }
 

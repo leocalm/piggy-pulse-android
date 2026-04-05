@@ -1,6 +1,7 @@
 package com.piggypulse.android.feature.transactions
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -22,16 +25,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.piggypulse.android.core.model.AccountOption
-import com.piggypulse.android.core.model.CategoryOption
 import com.piggypulse.android.core.model.CreateTransactionRequest
 import com.piggypulse.android.core.model.Transaction
 import com.piggypulse.android.core.model.TransactionFilterOptions
 import com.piggypulse.android.core.model.UpdateTransactionRequest
-import com.piggypulse.android.core.model.VendorOption
 import com.piggypulse.android.core.util.CurrencyFormatter
 import com.piggypulse.android.design.component.PpButton
 import com.piggypulse.android.design.component.PpDestructiveButton
@@ -133,6 +134,34 @@ fun TransactionFormSheet(
                 selectedId = selectedVendorId ?: "",
                 onSelect = { selectedVendorId = it.ifEmpty { null } },
             )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Transfer toggle — when enabled a "To account" selector is shown
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Checkbox(
+                    checked = isTransfer,
+                    onCheckedChange = { isTransfer = it },
+                    colors = CheckboxDefaults.colors(checkedColor = PpTheme.colors.primary),
+                )
+                Text(
+                    text = "Transfer between accounts",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PpTheme.colors.textPrimary,
+                )
+            }
+
+            if (isTransfer) {
+                Spacer(modifier = Modifier.height(12.dp))
+                OptionDropdown(
+                    label = "To account",
+                    options = listOf("" to "Select account") + filterOptions.accounts.map { it.id to it.name },
+                    selectedId = selectedToAccountId ?: "",
+                    onSelect = { selectedToAccountId = it.ifEmpty { null } },
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -140,7 +169,8 @@ fun TransactionFormSheet(
             val canSave = amount != null && amount > 0 &&
                 description.isNotBlank() &&
                 selectedCategoryId != null &&
-                selectedFromAccountId != null
+                selectedFromAccountId != null &&
+                (!isTransfer || selectedToAccountId != null)
 
             PpButton(
                 text = if (isEditing) "Save changes" else "Create transaction",
