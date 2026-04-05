@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">PiggyPulse</string>
+    <string name="tab_dashboard">Painel</string>
+    <string name="tab_transactions">Transacoes</string>
+    <string name="tab_accounts">Contas</string>
+    <string name="tab_more">Mais</string>
+    <string name="login_title">Bem-vindo de volta</string>
+    <string name="login_button">Entrar</string>
+    <string name="register_title">Crie sua conta</string>
+    <string name="register_button">Criar conta</string>
+    <string name="forgot_password_title">Redefinir sua senha</string>
+    <string name="onboarding_tagline">Seu pulso financeiro, de relance</string>
+    <string name="get_started">Comecar</string>
+</resources>
