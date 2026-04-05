@@ -2,7 +2,9 @@ package com.piggypulse.android.feature.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -20,12 +22,31 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.Store
+import androidx.compose.ui.Alignment
 import com.piggypulse.android.app.AppState
+import com.piggypulse.android.design.component.PpButton
+import com.piggypulse.android.design.component.PpCard
+import com.piggypulse.android.design.component.PpDestructiveButton
 import com.piggypulse.android.design.component.PpEmptyState
 import com.piggypulse.android.design.theme.PpTheme
 import com.piggypulse.android.feature.accounts.AccountDetailScreen
 import com.piggypulse.android.feature.accounts.AccountsScreen
+import com.piggypulse.android.feature.categories.CategoriesScreen
+import com.piggypulse.android.feature.subscriptions.SubscriptionsScreen
 import com.piggypulse.android.feature.transactions.TransactionsScreen
+import com.piggypulse.android.feature.vendors.VendorsScreen
 
 @Composable
 fun MainScaffold(
@@ -121,7 +142,31 @@ fun MainScaffold(
                     )
                 }
                 composable<Route.More> {
-                    MorePlaceholder(appState)
+                    MoreScreen(
+                        onNavigate = { navController.navigate(it) },
+                        onLogout = { appState.logout() },
+                    )
+                }
+                composable<Route.Categories> {
+                    CategoriesScreen(
+                        onNavigateToDetail = { id -> navController.navigate(Route.CategoryDetail(id)) },
+                    )
+                }
+                composable<Route.Vendors> {
+                    val currentUser by appState.currentUser.collectAsState()
+                    VendorsScreen(
+                        periodId = selectedPeriodId,
+                        currencyCode = currentUser?.currency ?: "EUR",
+                        onNavigateToDetail = { id -> navController.navigate(Route.VendorDetail(id)) },
+                    )
+                }
+                composable<Route.Subscriptions> {
+                    val currentUser by appState.currentUser.collectAsState()
+                    SubscriptionsScreen(
+                        periodId = selectedPeriodId,
+                        currencyCode = currentUser?.currency ?: "EUR",
+                        onNavigateToDetail = { id -> navController.navigate(Route.SubscriptionDetail(id)) },
+                    )
                 }
             }
         }
@@ -138,15 +183,78 @@ private fun PlaceholderScreen(title: String) {
 }
 
 @Composable
-private fun MorePlaceholder(appState: AppState) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        PpEmptyState(
-            title = "Settings & More",
-            message = "Coming soon",
-        ) {
-            com.piggypulse.android.design.component.PpButton(
+private fun MoreScreen(
+    onNavigate: (Route) -> Unit,
+    onLogout: () -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        item {
+            Text(
+                text = "More",
+                style = MaterialTheme.typography.headlineMedium,
+                color = PpTheme.colors.textPrimary,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        item {
+            MoreMenuItem(
+                icon = Icons.Default.Category,
+                label = "Categories",
+                onClick = { onNavigate(Route.Categories) },
+            )
+        }
+        item {
+            MoreMenuItem(
+                icon = Icons.Default.Store,
+                label = "Vendors",
+                onClick = { onNavigate(Route.Vendors) },
+            )
+        }
+        item {
+            MoreMenuItem(
+                icon = Icons.Default.Repeat,
+                label = "Subscriptions",
+                onClick = { onNavigate(Route.Subscriptions) },
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+            PpDestructiveButton(
                 text = "Logout",
-                onClick = { appState.logout() },
+                onClick = onLogout,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MoreMenuItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    onClick: () -> Unit,
+) {
+    PpCard(modifier = Modifier.clickable(onClick = onClick)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = PpTheme.colors.primary,
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = PpTheme.colors.textPrimary,
             )
         }
     }

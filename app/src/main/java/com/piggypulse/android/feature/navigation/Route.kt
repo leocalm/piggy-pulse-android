@@ -15,6 +15,14 @@ sealed interface Route {
     @Serializable data object Accounts : Route
     @Serializable data object More : Route
 
+    // Catalog screens (via More tab)
+    @Serializable data object Categories : Route
+    @Serializable data object Vendors : Route
+    @Serializable data object Subscriptions : Route
+    @Serializable data object Periods : Route
+    @Serializable data object Targets : Route
+    @Serializable data object Settings : Route
+
     // Detail screens
     @Serializable data class AccountDetail(val id: String) : Route
     @Serializable data class CategoryDetail(val id: String) : Route
