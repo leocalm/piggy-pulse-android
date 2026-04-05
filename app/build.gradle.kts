@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000/api/v2\"")
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000/v2\"")
         }
         release {
             isMinifyEnabled = true
@@ -31,7 +31,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://api.piggy-pulse.com/api/v2\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://api.piggy-pulse.com/v2\"")
         }
     }
     compileOptions {
