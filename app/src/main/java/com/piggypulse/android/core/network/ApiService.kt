@@ -13,11 +13,11 @@ import com.piggypulse.android.core.model.CreatePeriodRequest
 import com.piggypulse.android.core.model.CreateTargetRequest
 import com.piggypulse.android.core.model.DashboardCashFlow
 import com.piggypulse.android.core.model.DashboardCurrentPeriod
-import com.piggypulse.android.core.model.DashboardFixedCategories
+import com.piggypulse.android.core.model.DashboardFixedCategoryItem
 import com.piggypulse.android.core.model.DashboardNetPosition
 import com.piggypulse.android.core.model.DashboardSpendingTrend
 import com.piggypulse.android.core.model.DashboardSubscriptions
-import com.piggypulse.android.core.model.DashboardTopVendors
+import com.piggypulse.android.core.model.DashboardTopVendorItem
 import com.piggypulse.android.core.model.CreateCategoryRequest
 import com.piggypulse.android.core.model.CreateOverlayRequest
 import com.piggypulse.android.core.model.CreateSubscriptionRequest
@@ -162,6 +162,7 @@ interface ApiService {
     // Accounts
     @GET("accounts/summary")
     suspend fun getAccountSummaries(
+        @Query("periodId") periodId: String? = null,
         @Query("cursor") cursor: String? = null,
         @Query("limit") limit: Int? = null,
     ): Response<PaginatedAccountSummaries>
@@ -339,7 +340,7 @@ interface ApiService {
     suspend fun getDashboardTopVendors(
         @Query("periodId") periodId: String,
         @Query("limit") limit: Int? = 5,
-    ): Response<DashboardTopVendors>
+    ): Response<List<DashboardTopVendorItem>>
 
     @GET("dashboard/subscriptions")
     suspend fun getDashboardSubscriptions(
@@ -349,7 +350,7 @@ interface ApiService {
     @GET("dashboard/fixed-categories")
     suspend fun getDashboardFixedCategories(
         @Query("periodId") periodId: String,
-    ): Response<DashboardFixedCategories>
+    ): Response<List<DashboardFixedCategoryItem>>
 
     @GET("transactions")
     suspend fun getRecentTransactions(

@@ -13,8 +13,8 @@ import javax.inject.Singleton
 class AccountRepository @Inject constructor(
     private val apiClient: ApiClient,
 ) {
-    suspend fun fetchSummaries(): Result<List<AccountSummary>> {
-        return apiClient.request { apiClient.service.getAccountSummaries(limit = 200) }
+    suspend fun fetchSummaries(periodId: String? = null): Result<List<AccountSummary>> {
+        return apiClient.request { apiClient.service.getAccountSummaries(periodId = periodId, limit = 200) }
             .map { it.data }
     }
 

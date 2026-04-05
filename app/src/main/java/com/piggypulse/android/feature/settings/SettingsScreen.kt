@@ -13,7 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -39,6 +43,7 @@ import com.piggypulse.android.design.theme.ThemeManager
 fun SettingsScreen(
     appState: AppState,
     themeManager: ThemeManager,
+    onNavigateBack: () -> Unit,
 ) {
     val currentUser by appState.currentUser.collectAsState()
     val colorTheme by themeManager.colorTheme.collectAsState()
@@ -46,7 +51,20 @@ fun SettingsScreen(
 
     Scaffold(
         containerColor = PpTheme.colors.background,
-        topBar = { PpTopBar(title = "Settings") },
+        topBar = {
+            PpTopBar(
+                title = "Settings",
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = PpTheme.colors.textPrimary,
+                        )
+                    }
+                },
+            )
+        },
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -87,7 +105,6 @@ fun SettingsScreen(
                         Text("Color Theme", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textSecondary)
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Theme picker: 2 rows of 3 chips via FlowRow
                         FlowRow(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),

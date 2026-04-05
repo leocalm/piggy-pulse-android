@@ -59,12 +59,15 @@ class AccountsViewModel @Inject constructor(
             }
         }
 
-    fun load() {
+    private var currentPeriodId: String? = null
+
+    fun load(periodId: String? = null) {
+        currentPeriodId = periodId
         loadJob?.cancel()
         _isLoading.value = true
         _errorMessage.value = null
         loadJob = viewModelScope.launch {
-            repository.fetchSummaries().fold(
+            repository.fetchSummaries(periodId).fold(
                 onSuccess = { _accounts.value = it },
                 onFailure = { _errorMessage.value = "Failed to load accounts" },
             )

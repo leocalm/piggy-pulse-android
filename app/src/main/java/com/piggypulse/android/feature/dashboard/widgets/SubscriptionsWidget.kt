@@ -20,9 +20,11 @@ fun SubscriptionsWidget(
     currencyCode: String,
     modifier: Modifier = Modifier,
 ) {
-    val subtitle = "${data.activeCount} active"
-
-    WidgetCard(title = "Subscriptions", subtitle = subtitle, modifier = modifier) {
+    WidgetCard(
+        title = "Subscriptions",
+        subtitle = "${data.activeCount} active",
+        modifier = modifier,
+    ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             CurrencyText(
                 amountInCents = data.monthlyTotal,
@@ -31,30 +33,30 @@ fun SubscriptionsWidget(
                 color = PpTheme.colors.textPrimary,
             )
             Text(
-                text = "/mo",
+                text = "/mo \u00B7 ${CurrencyFormatter.format(data.yearlyTotal, currencyCode)}/yr",
                 style = MaterialTheme.typography.bodySmall,
                 color = PpTheme.colors.textSecondary,
                 modifier = Modifier.padding(top = 8.dp),
             )
         }
 
-        if (data.upcoming.isNotEmpty()) {
+        if (data.subscriptions.isNotEmpty()) {
             Text(
                 "Upcoming",
                 style = MaterialTheme.typography.labelSmall,
                 color = PpTheme.colors.textTertiary,
                 modifier = Modifier.padding(top = 8.dp),
             )
-            data.upcoming.take(3).forEach { charge ->
+            data.subscriptions.take(3).forEach { item ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(charge.name, style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textPrimary)
+                    Text(item.name, style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textPrimary)
                     Text(
-                        CurrencyFormatter.format(charge.billingAmount, currencyCode),
+                        CurrencyFormatter.format(item.billingAmount, currencyCode) + " \u00B7 " + item.displayStatus.uppercase(),
                         style = MaterialTheme.typography.bodySmall,
                         color = PpTheme.colors.textSecondary,
                     )

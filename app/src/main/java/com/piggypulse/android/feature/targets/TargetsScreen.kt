@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +38,7 @@ import com.piggypulse.android.design.theme.PpTheme
 fun TargetsScreen(
     periodId: String?,
     currencyCode: String,
+    onNavigateBack: () -> Unit,
     viewModel: TargetsViewModel = hiltViewModel(),
 ) {
     val targets by viewModel.targets.collectAsState()
@@ -45,7 +50,20 @@ fun TargetsScreen(
 
     Scaffold(
         containerColor = PpTheme.colors.background,
-        topBar = { PpTopBar(title = "Targets") },
+        topBar = {
+            PpTopBar(
+                title = "Targets",
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = PpTheme.colors.textPrimary,
+                        )
+                    }
+                },
+            )
+        },
     ) { innerPadding ->
         if (isLoading) {
             PpLoadingIndicator(fullScreen = true, modifier = Modifier.padding(innerPadding))

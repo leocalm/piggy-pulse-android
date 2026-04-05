@@ -29,10 +29,10 @@ fun SpendingTrendWidget(
             PpBarChart(
                 values = data.periods.map { it.totalSpent.toFloat() / 100f },
             )
-            if (data.average != null) {
+            if (data.periodAverage > 0) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Period average: ${CurrencyFormatter.format(data.average, currencyCode)}",
+                    text = "Period average: ${CurrencyFormatter.format(data.periodAverage, currencyCode)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = PpTheme.colors.textSecondary,
                 )

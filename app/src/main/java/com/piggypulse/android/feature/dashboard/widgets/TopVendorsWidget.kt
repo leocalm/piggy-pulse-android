@@ -10,21 +10,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.piggypulse.android.core.model.DashboardTopVendors
+import com.piggypulse.android.core.model.DashboardTopVendorItem
 import com.piggypulse.android.design.component.CurrencyText
 import com.piggypulse.android.design.theme.PpTheme
 
 @Composable
 fun TopVendorsWidget(
-    data: DashboardTopVendors,
+    vendors: List<DashboardTopVendorItem>,
     currencyCode: String,
     modifier: Modifier = Modifier,
 ) {
     WidgetCard(title = "Top Vendors", modifier = modifier) {
-        if (data.vendors.isEmpty()) {
+        if (vendors.isEmpty()) {
             Text("No vendor data", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textTertiary)
         } else {
-            data.vendors.forEachIndexed { index, vendor ->
+            vendors.forEachIndexed { index, vendor ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -40,7 +40,7 @@ fun TopVendorsWidget(
                             modifier = Modifier.padding(end = 8.dp),
                         )
                         Text(
-                            text = vendor.name,
+                            text = vendor.vendorName,
                             style = MaterialTheme.typography.bodyMedium,
                             color = PpTheme.colors.textPrimary,
                         )

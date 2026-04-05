@@ -141,6 +141,7 @@ fun MainScaffold(
                 composable<Route.Accounts> {
                     val currentUser by appState.currentUser.collectAsState()
                     AccountsScreen(
+                        periodId = selectedPeriodId,
                         currencyCode = currentUser?.currency ?: "EUR",
                         onNavigateToDetail = { id -> navController.navigate(Route.AccountDetail(id)) },
                     )
@@ -163,6 +164,7 @@ fun MainScaffold(
                 composable<Route.Categories> {
                     CategoriesScreen(
                         onNavigateToDetail = { id -> navController.navigate(Route.CategoryDetail(id)) },
+                        onNavigateBack = { navController.popBackStack() },
                     )
                 }
                 composable<Route.Vendors> {
@@ -171,6 +173,7 @@ fun MainScaffold(
                         periodId = selectedPeriodId,
                         currencyCode = currentUser?.currency ?: "EUR",
                         onNavigateToDetail = { id -> navController.navigate(Route.VendorDetail(id)) },
+                        onNavigateBack = { navController.popBackStack() },
                     )
                 }
                 composable<Route.Subscriptions> {
@@ -179,28 +182,34 @@ fun MainScaffold(
                         periodId = selectedPeriodId,
                         currencyCode = currentUser?.currency ?: "EUR",
                         onNavigateToDetail = { id -> navController.navigate(Route.SubscriptionDetail(id)) },
+                        onNavigateBack = { navController.popBackStack() },
                     )
                 }
                 composable<Route.Overlays> {
                     val currentUser by appState.currentUser.collectAsState()
                     OverlaysScreen(
                         currencyCode = currentUser?.currency ?: "EUR",
+                        onNavigateBack = { navController.popBackStack() },
                     )
                 }
                 composable<Route.Periods> {
-                    PeriodsScreen()
+                    PeriodsScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                    )
                 }
                 composable<Route.Targets> {
                     val currentUser by appState.currentUser.collectAsState()
                     TargetsScreen(
                         periodId = selectedPeriodId,
                         currencyCode = currentUser?.currency ?: "EUR",
+                        onNavigateBack = { navController.popBackStack() },
                     )
                 }
                 composable<Route.Settings> {
                     SettingsScreen(
                         appState = appState,
                         themeManager = themeManager,
+                        onNavigateBack = { navController.popBackStack() },
                     )
                 }
             }

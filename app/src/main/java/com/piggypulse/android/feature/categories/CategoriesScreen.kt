@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -46,6 +48,7 @@ import com.piggypulse.android.design.theme.PpTheme
 @Composable
 fun CategoriesScreen(
     onNavigateToDetail: (String) -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: CategoriesViewModel = hiltViewModel(),
 ) {
     val isLoading by viewModel.isLoading.collectAsState()
@@ -64,7 +67,20 @@ fun CategoriesScreen(
 
     Scaffold(
         containerColor = PpTheme.colors.background,
-        topBar = { PpTopBar(title = "Categories") },
+        topBar = {
+            PpTopBar(
+                title = "Categories",
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = PpTheme.colors.textPrimary,
+                        )
+                    }
+                },
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.openCreateForm() },
