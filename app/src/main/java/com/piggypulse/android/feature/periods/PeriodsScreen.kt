@@ -51,7 +51,8 @@ fun PeriodsScreen(
 ) {
     val periods by viewModel.periods.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val showForm by viewModel.showForm.collectAsState()
+    val showCreateForm by viewModel.showCreateForm.collectAsState()
+    val editingPeriod by viewModel.editingPeriod.collectAsState()
 
     LaunchedEffect(Unit) { viewModel.load() }
 
@@ -86,6 +87,7 @@ fun PeriodsScreen(
                 items(periods, key = { it.id }) { period ->
                     PeriodCard(
                         period = period,
+                        onEdit = { viewModel.openEditForm(period) },
                         onDelete = { viewModel.delete(period.id) },
                     )
                 }
@@ -94,10 +96,29 @@ fun PeriodsScreen(
         }
     }
 
-    if (showForm) {
+    if (showCreateForm) {
         PeriodFormSheet(
+            title = "New period",
+            initialName = "",
+            initialStartDate = LocalDate.now().toString(),
+            initialDurationUnits = "1",
+            initialDurationUnit = "months",
             onSave = { name, start, units, unit ->
                 viewModel.create(name, start, units, unit)
+            },
+            onDismiss = { viewModel.closeForm() },
+        )
+    }
+
+    editingPeriod?.let { period ->
+        PeriodFormSheet(
+            title = "Edit period",
+            initialName = period.name,
+            initialStartDate = period.startDate,
+            initialDurationUnits = "1",
+            initialDurationUnit = "months",
+            onSave = { name, start, units, unit ->
+                viewModel.update(period.id, name, start, units, unit)
             },
             onDismiss = { viewModel.closeForm() },
         )
@@ -107,6 +128,7 @@ fun PeriodsScreen(
 @Composable
 private fun PeriodCard(
     period: BudgetPeriod,
+    onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
     PpCard {
@@ -134,6 +156,7 @@ private fun PeriodCard(
             }
             PpKebabMenu(
                 items = listOf(
+                    KebabMenuItem("Edit", onClick = onEdit),
                     KebabMenuItem("Delete", onClick = onDelete, isDestructive = true),
                 ),
             )
@@ -144,13 +167,18 @@ private fun PeriodCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PeriodFormSheet(
+    title: String,
+    initialName: String,
+    initialStartDate: String,
+    initialDurationUnits: String,
+    initialDurationUnit: String,
     onSave: (name: String, startDate: String, durationUnits: Int, durationUnit: String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var name by remember { mutableStateOf("") }
-    var startDate by remember { mutableStateOf(LocalDate.now().toString()) }
-    var durationUnits by remember { mutableStateOf("1") }
-    var durationUnit by remember { mutableStateOf("months") }
+    var name by remember { mutableStateOf(initialName) }
+    var startDate by remember { mutableStateOf(initialStartDate) }
+    var durationUnits by remember { mutableStateOf(initialDurationUnits) }
+    var durationUnit by remember { mutableStateOf(initialDurationUnit) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -162,7 +190,7 @@ private fun PeriodFormSheet(
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
         ) {
-            Text("New period", style = MaterialTheme.typography.titleLarge, color = PpTheme.colors.textPrimary)
+            Text(title, style = MaterialTheme.typography.titleLarge, color = PpTheme.colors.textPrimary)
             Spacer(modifier = Modifier.height(16.dp))
             PpTextField(value = name, onValueChange = { name = it }, label = "Name", modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(12.dp))
@@ -173,7 +201,7 @@ private fun PeriodFormSheet(
             PpTextField(value = durationUnit, onValueChange = { durationUnit = it }, label = "Unit (days/weeks/months)", modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(24.dp))
             PpButton(
-                text = "Create period",
+                text = if (title == "New period") "Create period" else "Save changes",
                 onClick = { durationUnits.toIntOrNull()?.let { onSave(name, startDate, it, durationUnit) } },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = name.isNotBlank() && durationUnits.toIntOrNull() != null,

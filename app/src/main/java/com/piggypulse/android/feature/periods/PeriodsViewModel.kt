@@ -6,7 +6,7 @@ import com.piggypulse.android.core.model.BudgetPeriod
 import com.piggypulse.android.core.model.CreatePeriodRequest
 import com.piggypulse.android.core.model.PeriodDuration
 import com.piggypulse.android.core.model.PeriodScheduleResponse
-import com.piggypulse.android.core.network.ApiClient
+import com.piggypulse.android.core.model.UpdatePeriodRequest
 import com.piggypulse.android.core.repository.PeriodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -19,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class PeriodsViewModel @Inject constructor(
     private val repository: PeriodRepository,
-    private val apiClient: ApiClient,
 ) : ViewModel() {
 
     private val _periods = MutableStateFlow<List<BudgetPeriod>>(emptyList())
@@ -31,8 +30,11 @@ class PeriodsViewModel @Inject constructor(
     private val _schedule = MutableStateFlow<PeriodScheduleResponse?>(null)
     val schedule: StateFlow<PeriodScheduleResponse?> = _schedule.asStateFlow()
 
-    private val _showForm = MutableStateFlow(false)
-    val showForm: StateFlow<Boolean> = _showForm.asStateFlow()
+    private val _showCreateForm = MutableStateFlow(false)
+    val showCreateForm: StateFlow<Boolean> = _showCreateForm.asStateFlow()
+
+    private val _editingPeriod = MutableStateFlow<BudgetPeriod?>(null)
+    val editingPeriod: StateFlow<BudgetPeriod?> = _editingPeriod.asStateFlow()
 
     private var loadJob: Job? = null
 
@@ -41,31 +43,48 @@ class PeriodsViewModel @Inject constructor(
         _isLoading.value = true
         loadJob = viewModelScope.launch {
             repository.fetchPeriods().onSuccess { _periods.value = it }
-            apiClient.request { apiClient.service.getPeriodSchedule() }.onSuccess { _schedule.value = it }
+            repository.fetchSchedule().onSuccess { _schedule.value = it }
             _isLoading.value = false
         }
     }
 
-    fun openCreateForm() { _showForm.value = true }
-    fun closeForm() { _showForm.value = false }
+    fun openCreateForm() { _showCreateForm.value = true }
+
+    fun openEditForm(period: BudgetPeriod) { _editingPeriod.value = period }
+
+    fun closeForm() {
+        _showCreateForm.value = false
+        _editingPeriod.value = null
+    }
 
     fun create(name: String, startDate: String, durationUnits: Int, durationUnit: String) {
         viewModelScope.launch {
-            apiClient.request {
-                apiClient.service.createPeriod(
-                    CreatePeriodRequest(
-                        name = name,
-                        startDate = startDate,
-                        duration = PeriodDuration(durationUnits, durationUnit),
-                    ),
-                )
-            }.onSuccess { closeForm(); load() }
+            repository.create(
+                CreatePeriodRequest(
+                    name = name,
+                    startDate = startDate,
+                    duration = PeriodDuration(durationUnits, durationUnit),
+                ),
+            ).onSuccess { closeForm(); load() }
+        }
+    }
+
+    fun update(id: String, name: String, startDate: String, durationUnits: Int, durationUnit: String) {
+        viewModelScope.launch {
+            repository.update(
+                id,
+                UpdatePeriodRequest(
+                    name = name,
+                    startDate = startDate,
+                    duration = PeriodDuration(durationUnits, durationUnit),
+                ),
+            ).onSuccess { closeForm(); load() }
         }
     }
 
     fun delete(id: String) {
         viewModelScope.launch {
-            apiClient.requestUnit { apiClient.service.deletePeriod(id) }.onSuccess { load() }
+            repository.delete(id).onSuccess { load() }
         }
     }
 }

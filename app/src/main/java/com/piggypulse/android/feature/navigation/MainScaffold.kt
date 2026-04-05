@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Repeat
@@ -39,7 +38,6 @@ import androidx.compose.material.icons.filled.Store
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.ui.Alignment
 import com.piggypulse.android.app.AppState
-import com.piggypulse.android.design.component.PpButton
 import com.piggypulse.android.design.component.PpCard
 import com.piggypulse.android.design.component.PpDestructiveButton
 import com.piggypulse.android.design.component.PpEmptyState

@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.piggypulse.android.core.model.CategoryTargetItem
-import com.piggypulse.android.core.util.CurrencyFormatter
 import com.piggypulse.android.design.component.CurrencyText
 import com.piggypulse.android.design.component.PpCard
 import com.piggypulse.android.design.component.PpEmptyState
