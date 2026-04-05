@@ -17,7 +17,6 @@ class SubscriptionRepository @Inject constructor(
 ) {
     suspend fun fetchAll(periodId: String?): Result<List<SubscriptionItem>> {
         return apiClient.request { apiClient.service.getSubscriptions(periodId) }
-            .map { it.data }
     }
 
     suspend fun fetchDetail(id: String): Result<SubscriptionDetailResponse> {
@@ -26,7 +25,6 @@ class SubscriptionRepository @Inject constructor(
 
     suspend fun fetchUpcoming(periodId: String?, limit: Int? = 5): Result<List<UpcomingCharge>> {
         return apiClient.request { apiClient.service.getUpcomingCharges(periodId, limit) }
-            .map { it.data }
     }
 
     suspend fun create(request: CreateSubscriptionRequest): Result<SubscriptionResponse> {

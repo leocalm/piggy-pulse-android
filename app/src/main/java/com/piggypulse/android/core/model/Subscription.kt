@@ -16,10 +16,7 @@ data class SubscriptionItem(
     val cancelledAt: String? = null,
 )
 
-@Serializable
-data class SubscriptionListResponse(
-    val data: List<SubscriptionItem>,
-)
+// API returns a bare array for subscriptions list
 
 @Serializable
 data class SubscriptionDetailResponse(
@@ -53,10 +50,7 @@ data class UpcomingCharge(
     val vendorName: String? = null,
 )
 
-@Serializable
-data class UpcomingChargesResponse(
-    val data: List<UpcomingCharge>,
-)
+// API returns a bare array for upcoming charges
 
 @Serializable
 data class CreateSubscriptionRequest(

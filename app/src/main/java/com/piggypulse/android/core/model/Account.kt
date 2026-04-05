@@ -67,9 +67,9 @@ data class AccountResponse(
 )
 
 enum class AccountType(val apiValue: String, val label: String) {
-    Checking("checking", "Checking"),
-    Savings("savings", "Savings"),
-    CreditCard("credit_card", "Credit Card"),
-    Wallet("wallet", "Wallet"),
-    Allowance("allowance", "Allowance"),
+    Checking("Checking", "Checking"),
+    Savings("Savings", "Savings"),
+    CreditCard("CreditCard", "Credit Card"),
+    Wallet("Wallet", "Wallet"),
+    Allowance("Allowance", "Allowance"),
 }
