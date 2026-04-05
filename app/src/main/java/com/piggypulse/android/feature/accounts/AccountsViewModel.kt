@@ -54,7 +54,7 @@ class AccountsViewModel @Inject constructor(
         get() {
             val active = _accounts.value.filter { it.status.equals("active", ignoreCase = true) }
             return active.sumOf { account ->
-                if (account.type == "credit_card") -account.currentBalance
+                if (account.type.equals("CreditCard", ignoreCase = true)) -account.currentBalance
                 else account.currentBalance
             }
         }

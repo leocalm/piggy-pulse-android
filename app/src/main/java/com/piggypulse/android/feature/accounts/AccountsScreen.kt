@@ -113,7 +113,7 @@ fun AccountsScreen(
                 }
 
                 // Grouped by type
-                val typeOrder = listOf("checking", "savings", "credit_card", "wallet", "allowance")
+                val typeOrder = listOf("Checking", "Savings", "CreditCard", "Wallet", "Allowance")
                 typeOrder.forEach { type ->
                     val typeAccounts = groupedAccounts[type] ?: return@forEach
                     val typeLabel = AccountType.entries.firstOrNull { it.apiValue == type }?.label ?: type
