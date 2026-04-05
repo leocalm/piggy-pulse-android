@@ -26,6 +26,9 @@ navigationCompose = "2.9.0"
 # Security
 securityCrypto = "1.1.0-alpha06"
 
+# Charts
+vico = "2.1.2"
+
 # Coroutines
 coroutines = "1.10.2"
 
@@ -66,6 +69,9 @@ retrofit-kotlinx-serialization = { group = "com.jakewharton.retrofit", name = "r
 
 # Security
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+
+# Charts
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 
 # Coroutines
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
