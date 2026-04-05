@@ -15,6 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
+    val layout: DashboardLayout,
 ) : ViewModel() {
 
     private val _data = MutableStateFlow<DashboardData?>(null)
@@ -25,6 +26,9 @@ class DashboardViewModel @Inject constructor(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    private val _showCustomize = MutableStateFlow(false)
+    val showCustomize: StateFlow<Boolean> = _showCustomize.asStateFlow()
 
     private var loadJob: Job? = null
 
@@ -40,4 +44,7 @@ class DashboardViewModel @Inject constructor(
             _isLoading.value = false
         }
     }
+
+    fun openCustomize() { _showCustomize.value = true }
+    fun closeCustomize() { _showCustomize.value = false }
 }
