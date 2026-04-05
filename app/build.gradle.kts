@@ -79,6 +79,9 @@ dependencies {
     // Security
     implementation(libs.androidx.security.crypto)
 
+    // Charts
+    implementation(libs.vico.compose.m3)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
