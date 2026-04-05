@@ -82,6 +82,9 @@ dependencies {
     // Charts
     implementation(libs.vico.compose.m3)
 
+    // Reorderable
+    implementation(libs.reorderable)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
