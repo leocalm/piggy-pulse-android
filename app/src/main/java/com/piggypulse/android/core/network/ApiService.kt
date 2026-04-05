@@ -3,11 +3,30 @@ package com.piggypulse.android.core.network
 import com.piggypulse.android.core.model.AccountDetails
 import com.piggypulse.android.core.model.AccountOptionList
 import com.piggypulse.android.core.model.AccountResponse
+import com.piggypulse.android.core.model.CancelSubscriptionRequest
+import com.piggypulse.android.core.model.CategoryDetail
 import com.piggypulse.android.core.model.CategoryOptionList
+import com.piggypulse.android.core.model.CategoryResponse
 import com.piggypulse.android.core.model.ChangePasswordRequest
 import com.piggypulse.android.core.model.CreateAccountRequest
+import com.piggypulse.android.core.model.CreateCategoryRequest
+import com.piggypulse.android.core.model.CreateSubscriptionRequest
+import com.piggypulse.android.core.model.CreateVendorRequest
+import com.piggypulse.android.core.model.MergeVendorRequest
 import com.piggypulse.android.core.model.PaginatedAccountSummaries
+import com.piggypulse.android.core.model.PaginatedCategories
+import com.piggypulse.android.core.model.PaginatedVendors
+import com.piggypulse.android.core.model.SubscriptionDetailResponse
+import com.piggypulse.android.core.model.SubscriptionListResponse
+import com.piggypulse.android.core.model.SubscriptionResponse
 import com.piggypulse.android.core.model.UpdateAccountRequest
+import com.piggypulse.android.core.model.UpdateCategoryRequest
+import com.piggypulse.android.core.model.UpdateSubscriptionRequest
+import com.piggypulse.android.core.model.UpdateVendorRequest
+import com.piggypulse.android.core.model.UpcomingChargesResponse
+import com.piggypulse.android.core.model.VendorDetail
+import com.piggypulse.android.core.model.VendorResponse
+import com.piggypulse.android.core.model.VendorStatsResponse
 import com.piggypulse.android.core.model.CreateTransactionRequest
 import com.piggypulse.android.core.model.ForgotPasswordRequest
 import com.piggypulse.android.core.model.ForgotPasswordResponse
@@ -152,4 +171,123 @@ interface ApiService {
     suspend fun unarchiveAccount(
         @Path("id") id: String,
     ): Response<AccountResponse>
+
+    // Categories
+    @GET("categories")
+    suspend fun getCategories(
+        @Query("cursor") cursor: String? = null,
+        @Query("limit") limit: Int? = null,
+    ): Response<PaginatedCategories>
+
+    @GET("categories/{id}")
+    suspend fun getCategoryDetail(
+        @Path("id") id: String,
+        @Query("periodId") periodId: String? = null,
+    ): Response<CategoryDetail>
+
+    @POST("categories")
+    suspend fun createCategory(
+        @Body request: CreateCategoryRequest,
+    ): Response<CategoryResponse>
+
+    @PUT("categories/{id}")
+    suspend fun updateCategory(
+        @Path("id") id: String,
+        @Body request: UpdateCategoryRequest,
+    ): Response<CategoryResponse>
+
+    @DELETE("categories/{id}")
+    suspend fun deleteCategory(
+        @Path("id") id: String,
+    ): Response<Unit>
+
+    @POST("categories/{id}/archive")
+    suspend fun archiveCategory(
+        @Path("id") id: String,
+    ): Response<CategoryResponse>
+
+    @POST("categories/{id}/unarchive")
+    suspend fun unarchiveCategory(
+        @Path("id") id: String,
+    ): Response<CategoryResponse>
+
+    // Vendors
+    @GET("vendors")
+    suspend fun getVendors(
+        @Query("periodId") periodId: String? = null,
+        @Query("cursor") cursor: String? = null,
+        @Query("limit") limit: Int? = null,
+    ): Response<PaginatedVendors>
+
+    @GET("vendors/stats")
+    suspend fun getVendorStats(
+        @Query("periodId") periodId: String? = null,
+    ): Response<VendorStatsResponse>
+
+    @GET("vendors/{id}")
+    suspend fun getVendorDetail(
+        @Path("id") id: String,
+        @Query("periodId") periodId: String? = null,
+    ): Response<VendorDetail>
+
+    @POST("vendors")
+    suspend fun createVendor(
+        @Body request: CreateVendorRequest,
+    ): Response<VendorResponse>
+
+    @PUT("vendors/{id}")
+    suspend fun updateVendor(
+        @Path("id") id: String,
+        @Body request: UpdateVendorRequest,
+    ): Response<VendorResponse>
+
+    @DELETE("vendors/{id}")
+    suspend fun deleteVendor(
+        @Path("id") id: String,
+    ): Response<Unit>
+
+    @POST("vendors/{id}/merge")
+    suspend fun mergeVendor(
+        @Path("id") sourceId: String,
+        @Body request: MergeVendorRequest,
+    ): Response<VendorResponse>
+
+    // Subscriptions
+    @GET("subscriptions")
+    suspend fun getSubscriptions(
+        @Query("periodId") periodId: String? = null,
+    ): Response<SubscriptionListResponse>
+
+    @GET("subscriptions/upcoming")
+    suspend fun getUpcomingCharges(
+        @Query("periodId") periodId: String? = null,
+        @Query("limit") limit: Int? = null,
+    ): Response<UpcomingChargesResponse>
+
+    @GET("subscriptions/{id}")
+    suspend fun getSubscriptionDetail(
+        @Path("id") id: String,
+    ): Response<SubscriptionDetailResponse>
+
+    @POST("subscriptions")
+    suspend fun createSubscription(
+        @Body request: CreateSubscriptionRequest,
+    ): Response<SubscriptionResponse>
+
+    @PUT("subscriptions/{id}")
+    suspend fun updateSubscription(
+        @Path("id") id: String,
+        @Body request: UpdateSubscriptionRequest,
+    ): Response<SubscriptionResponse>
+
+    @DELETE("subscriptions/{id}")
+    suspend fun deleteSubscription(
+        @Path("id") id: String,
+    ): Response<Unit>
+
+    @POST("subscriptions/{id}/cancel")
+    suspend fun cancelSubscription(
+        @Path("id") id: String,
+        @Body request: CancelSubscriptionRequest,
+    ): Response<SubscriptionResponse>
 }
