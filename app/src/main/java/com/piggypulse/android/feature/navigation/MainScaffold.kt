@@ -19,9 +19,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.piggypulse.android.app.AppState
 import com.piggypulse.android.design.component.PpEmptyState
 import com.piggypulse.android.design.theme.PpTheme
+import com.piggypulse.android.feature.accounts.AccountDetailScreen
+import com.piggypulse.android.feature.accounts.AccountsScreen
 import com.piggypulse.android.feature.transactions.TransactionsScreen
 
 @Composable
@@ -102,7 +105,20 @@ fun MainScaffold(
                     )
                 }
                 composable<Route.Accounts> {
-                    PlaceholderScreen("Accounts")
+                    val currentUser by appState.currentUser.collectAsState()
+                    AccountsScreen(
+                        currencyCode = currentUser?.currency ?: "EUR",
+                        onNavigateToDetail = { id -> navController.navigate(Route.AccountDetail(id)) },
+                    )
+                }
+                composable<Route.AccountDetail> { backStackEntry ->
+                    val route = backStackEntry.toRoute<Route.AccountDetail>()
+                    val currentUser by appState.currentUser.collectAsState()
+                    AccountDetailScreen(
+                        accountId = route.id,
+                        currencyCode = currentUser?.currency ?: "EUR",
+                        onNavigateBack = { navController.popBackStack() },
+                    )
                 }
                 composable<Route.More> {
                     MorePlaceholder(appState)
