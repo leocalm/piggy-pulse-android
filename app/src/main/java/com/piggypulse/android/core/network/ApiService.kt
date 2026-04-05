@@ -258,16 +258,16 @@ interface ApiService {
         @Query("periodId") periodId: String? = null,
     ): Response<SubscriptionListResponse>
 
-    @GET("subscriptions/{id}")
-    suspend fun getSubscriptionDetail(
-        @Path("id") id: String,
-    ): Response<SubscriptionDetailResponse>
-
     @GET("subscriptions/upcoming")
     suspend fun getUpcomingCharges(
         @Query("periodId") periodId: String? = null,
         @Query("limit") limit: Int? = null,
     ): Response<UpcomingChargesResponse>
+
+    @GET("subscriptions/{id}")
+    suspend fun getSubscriptionDetail(
+        @Path("id") id: String,
+    ): Response<SubscriptionDetailResponse>
 
     @POST("subscriptions")
     suspend fun createSubscription(

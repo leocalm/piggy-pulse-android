@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.piggypulse.android.core.model.SubscriptionItem
-import com.piggypulse.android.core.util.CurrencyFormatter
 import com.piggypulse.android.design.component.CurrencyText
 import com.piggypulse.android.design.component.KebabMenuItem
 import com.piggypulse.android.design.component.PpCard
@@ -225,11 +224,21 @@ private fun SubscriptionRow(
                     style = MaterialTheme.typography.bodyMedium,
                     color = PpTheme.colors.textPrimary,
                 )
-                Text(
-                    text = CurrencyFormatter.format(subscription.billingAmount, currencyCode) + cycleLabel,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = PpTheme.colors.textSecondary,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CurrencyText(
+                        amountInCents = subscription.billingAmount,
+                        currencyCode = currencyCode,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = PpTheme.colors.textSecondary,
+                    )
+                    if (cycleLabel.isNotEmpty()) {
+                        Text(
+                            text = cycleLabel,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = PpTheme.colors.textSecondary,
+                        )
+                    }
+                }
             }
             if (subscription.nextChargeDate != null) {
                 Text(
