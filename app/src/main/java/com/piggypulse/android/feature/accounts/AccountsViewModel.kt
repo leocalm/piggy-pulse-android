@@ -61,7 +61,7 @@ class AccountsViewModel @Inject constructor(
 
     private var currentPeriodId: String? = null
 
-    fun load(periodId: String? = null) {
+    fun load(periodId: String) {
         currentPeriodId = periodId
         loadJob?.cancel()
         _isLoading.value = true
@@ -106,7 +106,7 @@ class AccountsViewModel @Inject constructor(
         viewModelScope.launch {
             repository.create(request).onSuccess {
                 closeForm()
-                load()
+                reload()
             }
         }
     }
@@ -115,26 +115,30 @@ class AccountsViewModel @Inject constructor(
         viewModelScope.launch {
             repository.update(id, request).onSuccess {
                 closeForm()
-                load()
+                reload()
             }
         }
     }
 
     fun deleteAccount(id: String) {
         viewModelScope.launch {
-            repository.delete(id).onSuccess { load() }
+            repository.delete(id).onSuccess { reload() }
         }
     }
 
     fun archiveAccount(id: String) {
         viewModelScope.launch {
-            repository.archive(id).onSuccess { load() }
+            repository.archive(id).onSuccess { reload() }
         }
     }
 
     fun unarchiveAccount(id: String) {
         viewModelScope.launch {
-            repository.unarchive(id).onSuccess { load() }
+            repository.unarchive(id).onSuccess { reload() }
         }
+    }
+
+    private fun reload() {
+        currentPeriodId?.let { load(it) }
     }
 }
