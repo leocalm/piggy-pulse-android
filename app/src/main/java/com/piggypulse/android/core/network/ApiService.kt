@@ -28,16 +28,17 @@ import com.piggypulse.android.core.model.OnboardingStatusResponse
 import com.piggypulse.android.core.model.OverlayResponse
 import com.piggypulse.android.core.model.PaginatedOverlays
 import com.piggypulse.android.core.model.PaginatedAccountSummaries
+import com.piggypulse.android.core.model.CategoryTargetsResponse
 import com.piggypulse.android.core.model.PaginatedCategories
-import com.piggypulse.android.core.model.PaginatedTargets
 import com.piggypulse.android.core.model.PeriodResponse
 import com.piggypulse.android.core.model.PeriodScheduleResponse
 import com.piggypulse.android.core.model.PreferencesResponse
 import com.piggypulse.android.core.model.ProfileResponse
 import com.piggypulse.android.core.model.PaginatedVendors
 import com.piggypulse.android.core.model.SubscriptionDetailResponse
-import com.piggypulse.android.core.model.SubscriptionListResponse
+import com.piggypulse.android.core.model.SubscriptionItem
 import com.piggypulse.android.core.model.SubscriptionResponse
+import com.piggypulse.android.core.model.UpcomingCharge
 import com.piggypulse.android.core.model.UpdateAccountRequest
 import com.piggypulse.android.core.model.TargetResponse
 import com.piggypulse.android.core.model.UpdateCategoryRequest
@@ -48,7 +49,6 @@ import com.piggypulse.android.core.model.UpdateProfileRequest
 import com.piggypulse.android.core.model.UpdateTargetRequest
 import com.piggypulse.android.core.model.UpdateSubscriptionRequest
 import com.piggypulse.android.core.model.UpdateVendorRequest
-import com.piggypulse.android.core.model.UpcomingChargesResponse
 import com.piggypulse.android.core.model.VendorDetail
 import com.piggypulse.android.core.model.VendorResponse
 import com.piggypulse.android.core.model.VendorStatsResponse
@@ -282,13 +282,13 @@ interface ApiService {
     @GET("subscriptions")
     suspend fun getSubscriptions(
         @Query("periodId") periodId: String? = null,
-    ): Response<SubscriptionListResponse>
+    ): Response<List<SubscriptionItem>>
 
     @GET("subscriptions/upcoming")
     suspend fun getUpcomingCharges(
         @Query("periodId") periodId: String? = null,
         @Query("limit") limit: Int? = null,
-    ): Response<UpcomingChargesResponse>
+    ): Response<List<UpcomingCharge>>
 
     @GET("subscriptions/{id}")
     suspend fun getSubscriptionDetail(
@@ -384,7 +384,7 @@ interface ApiService {
         @Query("periodId") periodId: String,
         @Query("cursor") cursor: String? = null,
         @Query("limit") limit: Int? = null,
-    ): Response<PaginatedTargets>
+    ): Response<CategoryTargetsResponse>
 
     @POST("targets")
     suspend fun createTarget(

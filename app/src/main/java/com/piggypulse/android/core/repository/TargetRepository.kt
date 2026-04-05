@@ -1,6 +1,6 @@
 package com.piggypulse.android.core.repository
 
-import com.piggypulse.android.core.model.CategoryTargetItem
+import com.piggypulse.android.core.model.CategoryTargetsResponse
 import com.piggypulse.android.core.model.CreateTargetRequest
 import com.piggypulse.android.core.model.TargetResponse
 import com.piggypulse.android.core.model.UpdateTargetRequest
@@ -12,9 +12,8 @@ import javax.inject.Singleton
 class TargetRepository @Inject constructor(
     private val apiClient: ApiClient,
 ) {
-    suspend fun fetchTargets(periodId: String): Result<List<CategoryTargetItem>> {
-        return apiClient.request { apiClient.service.getTargets(periodId, limit = 200) }
-            .map { it.data }
+    suspend fun fetchTargets(periodId: String): Result<CategoryTargetsResponse> {
+        return apiClient.request { apiClient.service.getTargets(periodId) }
     }
 
     suspend fun create(request: CreateTargetRequest): Result<TargetResponse> {
