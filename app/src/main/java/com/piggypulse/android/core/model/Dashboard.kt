@@ -106,7 +106,3 @@ data class FixedCategoryItem(
     val status: String? = null,
 )
 
-@Serializable
-data class RecentTransactionsResponse(
-    val data: List<Transaction>,
-)

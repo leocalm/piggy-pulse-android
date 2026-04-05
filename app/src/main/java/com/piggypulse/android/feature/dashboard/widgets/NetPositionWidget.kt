@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.DashboardNetPosition
@@ -34,17 +35,27 @@ fun NetPositionWidget(
         )
         if (data.periodChange != null) {
             val prefix = if (data.periodChange >= 0) "+" else ""
-            Text(
-                text = "this period $prefix",
-                style = MaterialTheme.typography.bodySmall,
-                color = PpTheme.colors.textSecondary,
-            )
-            CurrencyText(
-                amountInCents = data.periodChange,
-                currencyCode = currencyCode,
-                style = MaterialTheme.typography.bodySmall,
-                color = PpTheme.colors.textSecondary,
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = "this period",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PpTheme.colors.textSecondary,
+                )
+                Text(
+                    text = prefix,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PpTheme.colors.textSecondary,
+                )
+                CurrencyText(
+                    amountInCents = data.periodChange,
+                    currencyCode = currencyCode,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = PpTheme.colors.textSecondary,
+                )
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Row(

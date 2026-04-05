@@ -35,7 +35,7 @@ fun VariableCategoriesWidget(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text("${cat.icon ?: ""} ${cat.name}", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textPrimary)
+                    Text("${cat.icon?.let { "$it " } ?: ""}${cat.name}", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textPrimary)
                     Text(
                         "${CurrencyFormatter.format(cat.spent, currencyCode)} / ${CurrencyFormatter.format(cat.budgeted, currencyCode)}",
                         style = MaterialTheme.typography.bodySmall,
