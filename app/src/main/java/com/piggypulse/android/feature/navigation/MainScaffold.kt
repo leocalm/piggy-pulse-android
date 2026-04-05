@@ -44,6 +44,7 @@ import com.piggypulse.android.design.theme.PpTheme
 import com.piggypulse.android.feature.accounts.AccountDetailScreen
 import com.piggypulse.android.feature.accounts.AccountsScreen
 import com.piggypulse.android.feature.categories.CategoriesScreen
+import com.piggypulse.android.feature.dashboard.DashboardScreen
 import com.piggypulse.android.feature.subscriptions.SubscriptionsScreen
 import com.piggypulse.android.feature.transactions.TransactionsScreen
 import com.piggypulse.android.feature.vendors.VendorsScreen
@@ -116,7 +117,11 @@ fun MainScaffold(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 composable<Route.Dashboard> {
-                    PlaceholderScreen("Dashboard")
+                    val currentUser by appState.currentUser.collectAsState()
+                    DashboardScreen(
+                        periodId = selectedPeriodId,
+                        currencyCode = currentUser?.currency ?: "EUR",
+                    )
                 }
                 composable<Route.Transactions> {
                     val currentUser by appState.currentUser.collectAsState()
