@@ -22,6 +22,8 @@ import com.piggypulse.android.core.model.CreateCategoryRequest
 import com.piggypulse.android.core.model.CreateSubscriptionRequest
 import com.piggypulse.android.core.model.CreateVendorRequest
 import com.piggypulse.android.core.model.MergeVendorRequest
+import com.piggypulse.android.core.model.OnboardingCompleteResponse
+import com.piggypulse.android.core.model.OnboardingStatusResponse
 import com.piggypulse.android.core.model.PaginatedAccountSummaries
 import com.piggypulse.android.core.model.PaginatedCategories
 import com.piggypulse.android.core.model.PaginatedTargets
@@ -409,4 +411,11 @@ interface ApiService {
 
     @DELETE("settings/account")
     suspend fun deleteUserAccount(): Response<Unit>
+
+    // Onboarding
+    @GET("onboarding/status")
+    suspend fun getOnboardingStatus(): Response<OnboardingStatusResponse>
+
+    @POST("onboarding/complete")
+    suspend fun completeOnboarding(): Response<OnboardingCompleteResponse>
 }

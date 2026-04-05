@@ -43,6 +43,9 @@ class AppState @Inject constructor(
     private val _isInitializing = MutableStateFlow(true)
     val isInitializing: StateFlow<Boolean> = _isInitializing.asStateFlow()
 
+    private val _onboardingCompleted = MutableStateFlow(true)
+    val onboardingCompleted: StateFlow<Boolean> = _onboardingCompleted.asStateFlow()
+
     init {
         if (tokenManager.getAccessToken() != null) {
             validateSession()
@@ -57,6 +60,7 @@ class AppState @Inject constructor(
             result.fold(
                 onSuccess = { user ->
                     _currentUser.value = user
+                    checkOnboarding()
                     loadPeriods()
                 },
                 onFailure = { error ->
@@ -66,6 +70,21 @@ class AppState @Inject constructor(
                 },
             )
             _isInitializing.value = false
+        }
+    }
+
+    private fun checkOnboarding() {
+        viewModelScope.launch {
+            apiClient.request { apiClient.service.getOnboardingStatus() }.onSuccess {
+                _onboardingCompleted.value = it.completed
+            }
+        }
+    }
+
+    fun completeOnboarding() {
+        viewModelScope.launch {
+            apiClient.request { apiClient.service.completeOnboarding() }
+            _onboardingCompleted.value = true
         }
     }
 

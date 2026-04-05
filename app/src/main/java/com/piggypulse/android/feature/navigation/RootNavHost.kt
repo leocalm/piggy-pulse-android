@@ -11,6 +11,7 @@ import com.piggypulse.android.app.AppState
 import com.piggypulse.android.core.network.ApiClient
 import com.piggypulse.android.design.component.PpLoadingIndicator
 import com.piggypulse.android.design.theme.ThemeManager
+import com.piggypulse.android.feature.onboarding.OnboardingScreen
 import com.piggypulse.android.feature.auth.ForgotPasswordScreen
 import com.piggypulse.android.feature.auth.LoginScreen
 import com.piggypulse.android.feature.auth.RegisterScreen
@@ -24,16 +25,17 @@ fun RootNavHost(
 ) {
     val isInitializing by appState.isInitializing.collectAsState()
     val isAuthenticated by appState.isAuthenticated.collectAsState()
+    val onboardingCompleted by appState.onboardingCompleted.collectAsState()
 
     if (isInitializing) {
         PpLoadingIndicator(fullScreen = true)
         return
     }
 
-    if (isAuthenticated) {
-        MainScaffold(appState = appState, themeManager = themeManager)
-    } else {
-        AuthNavHost(appState = appState, apiClient = apiClient)
+    when {
+        !isAuthenticated -> AuthNavHost(appState = appState, apiClient = apiClient)
+        !onboardingCompleted -> OnboardingScreen(onComplete = { appState.completeOnboarding() })
+        else -> MainScaffold(appState = appState, themeManager = themeManager)
     }
 }
 
