@@ -27,7 +27,9 @@ import com.piggypulse.android.feature.dashboard.widgets.RecentTransactionsWidget
 import com.piggypulse.android.feature.dashboard.widgets.SpendingTrendWidget
 import com.piggypulse.android.feature.dashboard.widgets.SubscriptionsWidget
 import com.piggypulse.android.feature.dashboard.widgets.TopVendorsWidget
+import com.piggypulse.android.feature.dashboard.widgets.VariableCategoriesWidget
 import com.piggypulse.android.feature.dashboard.widgets.FixedCategoriesWidget
+import com.piggypulse.android.feature.dashboard.widgets.AccountCardWidget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,10 +129,27 @@ fun DashboardScreen(
                     }
                 }
 
+                // Variable Categories
+                dashboard.categoriesOverview?.let { overview ->
+                    val hasVariable = overview.categories.any { it.behavior == "variable" && it.type == "expense" }
+                    if (hasVariable) {
+                        item(key = "variable_categories") {
+                            VariableCategoriesWidget(overview = overview, currencyCode = currencyCode)
+                        }
+                    }
+                }
+
                 // Fixed Categories
                 if (dashboard.fixedCategories.isNotEmpty()) {
                     item(key = "fixed_categories") {
                         FixedCategoriesWidget(categories = dashboard.fixedCategories, currencyCode = currencyCode)
+                    }
+                }
+
+                // Individual Account Cards
+                dashboard.accountSummaries.forEach { account ->
+                    item(key = "account_${account.id}") {
+                        AccountCardWidget(account = account, currencyCode = currencyCode)
                     }
                 }
 

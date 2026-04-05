@@ -1,5 +1,7 @@
 package com.piggypulse.android.core.repository
 
+import com.piggypulse.android.core.model.AccountSummary
+import com.piggypulse.android.core.model.CategoryOverviewResponse
 import com.piggypulse.android.core.model.DashboardCashFlow
 import com.piggypulse.android.core.model.DashboardCurrentPeriod
 import com.piggypulse.android.core.model.DashboardFixedCategoryItem
@@ -22,7 +24,9 @@ data class DashboardData(
     val topVendors: List<DashboardTopVendorItem> = emptyList(),
     val subscriptions: DashboardSubscriptions? = null,
     val fixedCategories: List<DashboardFixedCategoryItem> = emptyList(),
+    val categoriesOverview: CategoryOverviewResponse? = null,
     val recentTransactions: List<Transaction> = emptyList(),
+    val accountSummaries: List<AccountSummary> = emptyList(),
 )
 
 @Singleton
@@ -55,8 +59,15 @@ class DashboardRepository @Inject constructor(
                     apiClient.request { apiClient.service.getDashboardFixedCategories(periodId) }
                         .getOrElse { emptyList() }
                 }
+                val categoriesOverview = async {
+                    apiClient.request { apiClient.service.getCategoriesOverview(periodId) }.getOrNull()
+                }
                 val recent = async {
                     apiClient.request { apiClient.service.getRecentTransactions(periodId, 7) }
+                        .map { it.data }.getOrElse { emptyList() }
+                }
+                val accounts = async {
+                    apiClient.request { apiClient.service.getAccountSummaries(periodId, limit = 200) }
                         .map { it.data }.getOrElse { emptyList() }
                 }
 
@@ -69,7 +80,9 @@ class DashboardRepository @Inject constructor(
                         topVendors = topVendors.await(),
                         subscriptions = subs.await(),
                         fixedCategories = fixed.await(),
+                        categoriesOverview = categoriesOverview.await(),
                         recentTransactions = recent.await(),
+                        accountSummaries = accounts.await(),
                     ),
                 )
             }
