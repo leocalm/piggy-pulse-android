@@ -16,7 +16,11 @@ class SubscriptionRepository @Inject constructor(
     private val apiClient: ApiClient,
 ) {
     suspend fun fetchAll(periodId: String?): Result<List<SubscriptionItem>> {
-        return apiClient.request { apiClient.service.getSubscriptions(periodId) }
+        return apiClient.request { apiClient.service.getSubscriptions(periodId = periodId) }
+    }
+
+    suspend fun fetchForCategory(categoryId: String): Result<List<SubscriptionItem>> {
+        return apiClient.request { apiClient.service.getSubscriptions(categoryId = categoryId) }
     }
 
     suspend fun fetchDetail(id: String): Result<SubscriptionDetailResponse> {

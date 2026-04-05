@@ -43,6 +43,7 @@ data class CreateCategoryRequest(
     val type: String,
     val description: String? = null,
     val behavior: String? = null,
+    val target: Long? = null,
 )
 
 @Serializable
@@ -53,6 +54,7 @@ data class UpdateCategoryRequest(
     val type: String,
     val description: String? = null,
     val behavior: String? = null,
+    val target: Long? = null,
 )
 
 @Serializable

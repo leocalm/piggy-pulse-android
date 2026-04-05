@@ -150,12 +150,16 @@ fun CategoriesScreen(
     }
 
     if (showForm) {
+        val catSubscriptions by viewModel.categorySubscriptions.collectAsState()
         CategoryFormSheet(
             category = editingCategory,
             defaultType = selectedTab,
+            subscriptions = catSubscriptions,
             onSave = { viewModel.create(it) },
             onUpdate = { id, req -> viewModel.update(id, req) },
             onDismiss = { viewModel.closeForm() },
+            onCancelSubscription = { viewModel.cancelSubscription(it) },
+            onDeleteSubscription = { viewModel.deleteSubscription(it) },
         )
     }
 }
