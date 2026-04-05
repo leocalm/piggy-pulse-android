@@ -1,6 +1,5 @@
 package com.piggypulse.android.feature.auth
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -49,95 +49,95 @@ fun RegisterScreen(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .imePadding()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Surface(
+        color = PpTheme.colors.background,
+        modifier = Modifier.fillMaxSize(),
     ) {
-        Text(
-            text = "PiggyPulse",
-            style = MaterialTheme.typography.displaySmall,
-            color = PpTheme.colors.primary,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Create your account",
-            style = MaterialTheme.typography.bodyLarge,
-            color = PpTheme.colors.textSecondary,
-        )
-        Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            AuthHeader(tagline = "Create your account")
 
-        PpTextField(
-            value = name,
-            onValueChange = { name = it; errorMessage = null },
-            label = "Name",
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) },
-            ),
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
 
-        PpTextField(
-            value = email,
-            onValueChange = { email = it; errorMessage = null },
-            label = "Email",
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next,
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) },
-            ),
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+                PpTextField(
+                    value = name,
+                    onValueChange = { name = it; errorMessage = null },
+                    label = "Name",
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                    ),
+                )
+                Spacer(modifier = Modifier.height(12.dp))
 
-        PpPasswordField(
-            value = password,
-            onValueChange = { password = it; errorMessage = null },
-            label = "Password",
-            modifier = Modifier.fillMaxWidth(),
-        )
+                PpTextField(
+                    value = email,
+                    onValueChange = { email = it; errorMessage = null },
+                    label = "Email",
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                    ),
+                )
+                Spacer(modifier = Modifier.height(12.dp))
 
-        if (errorMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = errorMessage!!,
-                color = PpTheme.colors.destructive,
-                style = MaterialTheme.typography.bodySmall,
-            )
-        }
+                PpPasswordField(
+                    value = password,
+                    onValueChange = { password = it; errorMessage = null },
+                    label = "Password",
+                    modifier = Modifier.fillMaxWidth(),
+                )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        PpButton(
-            text = if (isLoading) "Creating account..." else "Create account",
-            onClick = {
-                scope.launch {
-                    isLoading = true
-                    when (val result = appState.register(name, email, password)) {
-                        is LoginResult.Success -> onRegisterSuccess()
-                        is LoginResult.TwoFactorRequired -> { /* shouldn't happen on register */ }
-                        is LoginResult.Error -> errorMessage = result.message
-                    }
-                    isLoading = false
+                if (errorMessage != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = errorMessage!!,
+                        color = PpTheme.colors.destructive,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = name.isNotBlank() && email.isNotBlank() && password.length >= 8 && !isLoading,
-        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-        TextButton(onClick = onNavigateToLogin) {
-            Text("Already have an account? ", color = PpTheme.colors.textSecondary)
-            Text("Sign in", color = PpTheme.colors.primary)
+                PpButton(
+                    text = if (isLoading) "Creating account..." else "Create account",
+                    onClick = {
+                        scope.launch {
+                            isLoading = true
+                            when (val result = appState.register(name, email, password)) {
+                                is LoginResult.Success -> onRegisterSuccess()
+                                is LoginResult.TwoFactorRequired -> { }
+                                is LoginResult.Error -> errorMessage = result.message
+                            }
+                            isLoading = false
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = name.isNotBlank() && email.isNotBlank() && password.length >= 8 && !isLoading,
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                TextButton(onClick = onNavigateToLogin) {
+                    Text("Already have an account? ", color = PpTheme.colors.textSecondary)
+                    Text("Sign in", color = PpTheme.colors.primary)
+                }
+            }
         }
     }
 }

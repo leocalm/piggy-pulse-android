@@ -1,6 +1,5 @@
 package com.piggypulse.android.feature.auth
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,68 +43,75 @@ fun TwoFactorScreen(
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .imePadding()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Surface(
+        color = PpTheme.colors.background,
+        modifier = Modifier.fillMaxSize(),
     ) {
-        Text(
-            text = "Two-factor authentication",
-            style = MaterialTheme.typography.headlineMedium,
-            color = PpTheme.colors.textPrimary,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Enter the 6-digit code from your authenticator app.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = PpTheme.colors.textSecondary,
-        )
-        Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            AuthHeader(tagline = "Two-factor authentication")
 
-        PpTextField(
-            value = code,
-            onValueChange = { if (it.length <= 6) { code = it; errorMessage = null } },
-            label = "Code",
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
 
-        if (errorMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = errorMessage!!,
-                color = PpTheme.colors.destructive,
-                style = MaterialTheme.typography.bodySmall,
-            )
-        }
+                Text(
+                    text = "Enter the 6-digit code from your authenticator app.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PpTheme.colors.textSecondary,
+                )
+                Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+                PpTextField(
+                    value = code,
+                    onValueChange = { if (it.length <= 6) { code = it; errorMessage = null } },
+                    label = "Code",
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                )
 
-        PpButton(
-            text = if (isLoading) "Verifying..." else "Verify",
-            onClick = {
-                scope.launch {
-                    isLoading = true
-                    when (val result = appState.verifyTwoFactor(twoFactorToken, code)) {
-                        is LoginResult.Success -> onSuccess()
-                        is LoginResult.Error -> errorMessage = result.message
-                        is LoginResult.TwoFactorRequired -> { /* shouldn't happen */ }
-                    }
-                    isLoading = false
+                if (errorMessage != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = errorMessage!!,
+                        color = PpTheme.colors.destructive,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = code.length == 6 && !isLoading,
-        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-        TextButton(onClick = onNavigateBack) {
-            Text("Back to sign in", color = PpTheme.colors.primary)
+                PpButton(
+                    text = if (isLoading) "Verifying..." else "Verify",
+                    onClick = {
+                        scope.launch {
+                            isLoading = true
+                            when (val result = appState.verifyTwoFactor(twoFactorToken, code)) {
+                                is LoginResult.Success -> onSuccess()
+                                is LoginResult.Error -> errorMessage = result.message
+                                is LoginResult.TwoFactorRequired -> { }
+                            }
+                            isLoading = false
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = code.length == 6 && !isLoading,
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                TextButton(onClick = onNavigateBack) {
+                    Text("Back to sign in", color = PpTheme.colors.primary)
+                }
+            }
         }
     }
 }

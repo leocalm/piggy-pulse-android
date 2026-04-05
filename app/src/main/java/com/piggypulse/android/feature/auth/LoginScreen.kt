@@ -1,6 +1,5 @@
 package com.piggypulse.android.feature.auth
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -64,84 +64,84 @@ fun LoginScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .imePadding()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Surface(
+        color = PpTheme.colors.background,
+        modifier = Modifier.fillMaxSize(),
     ) {
-        Text(
-            text = "PiggyPulse",
-            style = MaterialTheme.typography.displaySmall,
-            color = PpTheme.colors.primary,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Welcome back",
-            style = MaterialTheme.typography.bodyLarge,
-            color = PpTheme.colors.textSecondary,
-        )
-        Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            AuthHeader(tagline = "Welcome back")
 
-        PpTextField(
-            value = email,
-            onValueChange = { email = it; errorMessage = null },
-            label = "Email",
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next,
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) },
-            ),
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
 
-        PpPasswordField(
-            value = password,
-            onValueChange = { password = it; errorMessage = null },
-            label = "Password",
-            modifier = Modifier.fillMaxWidth(),
-            imeAction = ImeAction.Done,
-            onDone = {
-                focusManager.clearFocus()
-                doLogin()
-            },
-        )
+                PpTextField(
+                    value = email,
+                    onValueChange = { email = it; errorMessage = null },
+                    label = "Email",
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                    ),
+                )
+                Spacer(modifier = Modifier.height(12.dp))
 
-        if (errorMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = errorMessage!!,
-                color = PpTheme.colors.destructive,
-                style = MaterialTheme.typography.bodySmall,
-            )
-        }
+                PpPasswordField(
+                    value = password,
+                    onValueChange = { password = it; errorMessage = null },
+                    label = "Password",
+                    modifier = Modifier.fillMaxWidth(),
+                    imeAction = ImeAction.Done,
+                    onDone = {
+                        focusManager.clearFocus()
+                        doLogin()
+                    },
+                )
 
-        Spacer(modifier = Modifier.height(24.dp))
+                if (errorMessage != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = errorMessage!!,
+                        color = PpTheme.colors.destructive,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
 
-        PpButton(
-            text = if (isLoading) "Signing in..." else "Sign in",
-            onClick = { doLogin() },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = email.isNotBlank() && password.isNotBlank() && !isLoading,
-        )
+                Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(12.dp))
+                PpButton(
+                    text = if (isLoading) "Signing in..." else "Sign in",
+                    onClick = { doLogin() },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = email.isNotBlank() && password.isNotBlank() && !isLoading,
+                )
 
-        TextButton(onClick = onNavigateToForgotPassword) {
-            Text("Forgot password?", color = PpTheme.colors.textSecondary)
-        }
+                Spacer(modifier = Modifier.height(12.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+                TextButton(onClick = onNavigateToForgotPassword) {
+                    Text("Forgot password?", color = PpTheme.colors.textSecondary)
+                }
 
-        TextButton(onClick = onNavigateToRegister) {
-            Text("Don't have an account? ", color = PpTheme.colors.textSecondary)
-            Text("Sign up", color = PpTheme.colors.primary)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                TextButton(onClick = onNavigateToRegister) {
+                    Text("Don't have an account? ", color = PpTheme.colors.textSecondary)
+                    Text("Sign up", color = PpTheme.colors.primary)
+                }
+            }
         }
     }
 }
