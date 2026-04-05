@@ -9,6 +9,13 @@ import com.piggypulse.android.core.model.CategoryOptionList
 import com.piggypulse.android.core.model.CategoryResponse
 import com.piggypulse.android.core.model.ChangePasswordRequest
 import com.piggypulse.android.core.model.CreateAccountRequest
+import com.piggypulse.android.core.model.DashboardCashFlow
+import com.piggypulse.android.core.model.DashboardCurrentPeriod
+import com.piggypulse.android.core.model.DashboardFixedCategories
+import com.piggypulse.android.core.model.DashboardNetPosition
+import com.piggypulse.android.core.model.DashboardSpendingTrend
+import com.piggypulse.android.core.model.DashboardSubscriptions
+import com.piggypulse.android.core.model.DashboardTopVendors
 import com.piggypulse.android.core.model.CreateCategoryRequest
 import com.piggypulse.android.core.model.CreateSubscriptionRequest
 import com.piggypulse.android.core.model.CreateVendorRequest
@@ -290,4 +297,45 @@ interface ApiService {
         @Path("id") id: String,
         @Body request: CancelSubscriptionRequest,
     ): Response<SubscriptionResponse>
+
+    // Dashboard
+    @GET("dashboard/current-period")
+    suspend fun getDashboardCurrentPeriod(
+        @Query("periodId") periodId: String,
+    ): Response<DashboardCurrentPeriod>
+
+    @GET("dashboard/net-position")
+    suspend fun getDashboardNetPosition(): Response<DashboardNetPosition>
+
+    @GET("dashboard/cash-flow")
+    suspend fun getDashboardCashFlow(
+        @Query("periodId") periodId: String,
+    ): Response<DashboardCashFlow>
+
+    @GET("dashboard/spending-trend")
+    suspend fun getDashboardSpendingTrend(
+        @Query("periodId") periodId: String,
+    ): Response<DashboardSpendingTrend>
+
+    @GET("dashboard/top-vendors")
+    suspend fun getDashboardTopVendors(
+        @Query("periodId") periodId: String,
+        @Query("limit") limit: Int? = 5,
+    ): Response<DashboardTopVendors>
+
+    @GET("dashboard/subscriptions")
+    suspend fun getDashboardSubscriptions(
+        @Query("periodId") periodId: String,
+    ): Response<DashboardSubscriptions>
+
+    @GET("dashboard/fixed-categories")
+    suspend fun getDashboardFixedCategories(
+        @Query("periodId") periodId: String,
+    ): Response<DashboardFixedCategories>
+
+    @GET("transactions")
+    suspend fun getRecentTransactions(
+        @Query("periodId") periodId: String,
+        @Query("limit") limit: Int? = 7,
+    ): Response<PaginatedTransactions>
 }
