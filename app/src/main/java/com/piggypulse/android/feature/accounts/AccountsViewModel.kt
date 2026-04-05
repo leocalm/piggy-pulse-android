@@ -47,12 +47,12 @@ class AccountsViewModel @Inject constructor(
 
     val groupedAccounts: Map<String, List<AccountSummary>>
         get() = _accounts.value
-            .filter { it.status == "Active" }
+            .filter { it.status.equals("active", ignoreCase = true) }
             .groupBy { it.type }
 
     val netPosition: Long
         get() {
-            val active = _accounts.value.filter { it.status == "Active" }
+            val active = _accounts.value.filter { it.status.equals("active", ignoreCase = true) }
             return active.sumOf { account ->
                 if (account.type == "credit_card") -account.currentBalance
                 else account.currentBalance
@@ -73,6 +73,7 @@ class AccountsViewModel @Inject constructor(
     }
 
     fun loadDetails(accountId: String) {
+        _accountDetails.value = null
         _isLoadingDetails.value = true
         viewModelScope.launch {
             repository.fetchDetails(accountId).fold(

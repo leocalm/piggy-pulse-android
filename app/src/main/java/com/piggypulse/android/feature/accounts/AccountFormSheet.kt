@@ -156,7 +156,7 @@ fun AccountFormSheet(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.length >= 3,
+                enabled = name.isNotBlank() && name.length >= 3,
             )
         }
     }

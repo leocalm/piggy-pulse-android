@@ -26,7 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.piggypulse.android.core.model.AccountSummary
 import com.piggypulse.android.core.model.AccountType
-import com.piggypulse.android.core.util.CurrencyFormatter
 import com.piggypulse.android.design.component.CurrencyText
 import com.piggypulse.android.design.component.KebabMenuItem
 import com.piggypulse.android.design.component.PpCard
@@ -54,6 +55,12 @@ fun AccountsScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val showForm by viewModel.showForm.collectAsState()
     val editingAccount by viewModel.editingAccount.collectAsState()
+    val netPosition by remember {
+        derivedStateOf { viewModel.netPosition }
+    }
+    val groupedAccounts by remember {
+        derivedStateOf { viewModel.groupedAccounts }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.load()
@@ -97,16 +104,15 @@ fun AccountsScreen(
                 item(key = "net_position") {
                     Spacer(modifier = Modifier.height(8.dp))
                     NetPositionCard(
-                        netPosition = viewModel.netPosition,
+                        netPosition = netPosition,
                         currencyCode = currencyCode,
                     )
                 }
 
                 // Grouped by type
-                val grouped = viewModel.groupedAccounts
                 val typeOrder = listOf("checking", "savings", "credit_card", "wallet", "allowance")
                 typeOrder.forEach { type ->
-                    val typeAccounts = grouped[type] ?: return@forEach
+                    val typeAccounts = groupedAccounts[type] ?: return@forEach
                     val typeLabel = AccountType.entries.firstOrNull { it.apiValue == type }?.label ?: type
 
                     item(key = "header_$type") {
