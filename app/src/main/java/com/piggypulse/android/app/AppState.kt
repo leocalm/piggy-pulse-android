@@ -93,7 +93,7 @@ class AppState @Inject constructor(
             periodRepository.fetchPeriods().onSuccess { periods ->
                 _periods.value = periods
                 if (_selectedPeriodId.value == null) {
-                    val active = periods.firstOrNull { it.status == "Active" }
+                    val active = periods.firstOrNull { it.status.equals("active", ignoreCase = true) }
                     _selectedPeriodId.value = active?.id ?: periods.firstOrNull()?.id
                 }
             }

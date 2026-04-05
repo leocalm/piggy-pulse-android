@@ -64,7 +64,9 @@ fun AccountsScreen(
     }
 
     LaunchedEffect(periodId) {
-        viewModel.load(periodId)
+        if (periodId != null) {
+            viewModel.load(periodId)
+        }
     }
 
     Scaffold(
