@@ -15,6 +15,9 @@ sealed interface Route {
     @Serializable data object Accounts : Route
     @Serializable data object More : Route
 
+    // Onboarding
+    @Serializable data object Onboarding : Route
+
     // Catalog screens (via More tab)
     @Serializable data object Categories : Route
     @Serializable data object Vendors : Route
