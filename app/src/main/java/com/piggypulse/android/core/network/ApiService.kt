@@ -288,6 +288,7 @@ interface ApiService {
     @GET("subscriptions")
     suspend fun getSubscriptions(
         @Query("periodId") periodId: String? = null,
+        @Query("categoryId") categoryId: String? = null,
     ): Response<List<SubscriptionItem>>
 
     @GET("subscriptions/upcoming")
