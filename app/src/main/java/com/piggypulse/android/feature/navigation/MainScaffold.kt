@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.piggypulse.android.app.AppState
 import com.piggypulse.android.design.component.PpEmptyState
 import com.piggypulse.android.design.theme.PpTheme
+import com.piggypulse.android.feature.transactions.TransactionsScreen
 
 @Composable
 fun MainScaffold(
@@ -94,7 +95,11 @@ fun MainScaffold(
                     PlaceholderScreen("Dashboard")
                 }
                 composable<Route.Transactions> {
-                    PlaceholderScreen("Transactions")
+                    val currentUser by appState.currentUser.collectAsState()
+                    TransactionsScreen(
+                        periodId = selectedPeriodId,
+                        currencyCode = currentUser?.currency ?: "EUR",
+                    )
                 }
                 composable<Route.Accounts> {
                     PlaceholderScreen("Accounts")
