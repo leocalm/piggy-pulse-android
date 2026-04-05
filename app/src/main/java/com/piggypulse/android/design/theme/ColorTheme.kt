@@ -26,26 +26,26 @@ enum class ColorTheme(
         tertiary = Color(0xFF9B8AE0),
         gradient = Color(0xFF4A7CFF) to Color(0xFFF0A25C),
     ),
-    SageStone(
-        label = "Sage Stone",
-        primary = Color(0xFF7A9E8E),
-        secondary = Color(0xFFB5A98A),
-        tertiary = Color(0xFF8FA3A8),
-        gradient = Color(0xFF7A9E8E) to Color(0xFFB5A98A),
+    Neon(
+        label = "Electric Neon",
+        primary = Color(0xFF00F0FF),
+        secondary = Color(0xFFFF00E5),
+        tertiary = Color(0xFFB8FF00),
+        gradient = Color(0xFF00F0FF) to Color(0xFFFF00E5),
     ),
-    DeepOcean(
-        label = "Deep Ocean",
-        primary = Color(0xFF3A6E8C),
-        secondary = Color(0xFF5B8FA8),
-        tertiary = Color(0xFF4A7A8C),
-        gradient = Color(0xFF3A6E8C) to Color(0xFF5B8FA8),
+    Tropical(
+        label = "Tropical",
+        primary = Color(0xFFFF6B6B),
+        secondary = Color(0xFF00CCB3),
+        tertiary = Color(0xFFFFC800),
+        gradient = Color(0xFFFF6B6B) to Color(0xFF00CCB3),
     ),
-    WarmRose(
-        label = "Warm Rose",
-        primary = Color(0xFFC4786A),
-        secondary = Color(0xFFD4A07A),
-        tertiary = Color(0xFFB88A8A),
-        gradient = Color(0xFFC4786A) to Color(0xFFD4A07A),
+    CandyPop(
+        label = "Candy Pop",
+        primary = Color(0xFFFF479C),
+        secondary = Color(0xFF00C2FF),
+        tertiary = Color(0xFFFFE100),
+        gradient = Color(0xFFFF479C) to Color(0xFF00C2FF),
     ),
     Moonlit(
         label = "Moonlit",
@@ -58,8 +58,7 @@ enum class ColorTheme(
     val dataPalette: List<Color> by lazy { buildDataPalette(listOf(primary, secondary, tertiary)) }
 }
 
-// Terracotta — used for destructive actions only, not as a positive/negative financial signal.
-val Destructive = Color(0xFFB05A4A)
+val Destructive = Color(0xFFC4786A)
 
 // -- Data palette generation (ported from web tokens.ts) --
 
