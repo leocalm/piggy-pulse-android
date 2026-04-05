@@ -10,6 +10,7 @@ import androidx.navigation.toRoute
 import com.piggypulse.android.app.AppState
 import com.piggypulse.android.core.network.ApiClient
 import com.piggypulse.android.design.component.PpLoadingIndicator
+import com.piggypulse.android.design.theme.ThemeManager
 import com.piggypulse.android.feature.auth.ForgotPasswordScreen
 import com.piggypulse.android.feature.auth.LoginScreen
 import com.piggypulse.android.feature.auth.RegisterScreen
@@ -19,6 +20,7 @@ import com.piggypulse.android.feature.auth.TwoFactorScreen
 fun RootNavHost(
     appState: AppState,
     apiClient: ApiClient,
+    themeManager: ThemeManager,
 ) {
     val isInitializing by appState.isInitializing.collectAsState()
     val isAuthenticated by appState.isAuthenticated.collectAsState()
@@ -29,7 +31,7 @@ fun RootNavHost(
     }
 
     if (isAuthenticated) {
-        MainScaffold(appState = appState)
+        MainScaffold(appState = appState, themeManager = themeManager)
     } else {
         AuthNavHost(appState = appState, apiClient = apiClient)
     }
