@@ -1,5 +1,6 @@
 package com.piggypulse.android.core.network
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 import retrofit2.Response
 import javax.inject.Inject
@@ -23,6 +24,8 @@ class ApiClient @Inject constructor(
             } else {
                 Result.failure(mapHttpError(response))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: ApiError) {
             Result.failure(e)
         } catch (e: kotlinx.serialization.SerializationException) {
@@ -42,6 +45,8 @@ class ApiClient @Inject constructor(
             } else {
                 Result.failure(mapHttpError(response))
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: ApiError) {
             Result.failure(e)
         } catch (e: java.io.IOException) {

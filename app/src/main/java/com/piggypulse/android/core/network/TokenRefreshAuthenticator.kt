@@ -1,5 +1,6 @@
 package com.piggypulse.android.core.network
 
+import com.piggypulse.android.BuildConfig
 import com.piggypulse.android.core.model.RefreshRequest
 import com.piggypulse.android.core.model.RefreshResponse
 import kotlinx.serialization.json.Json
@@ -10,6 +11,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.Route
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,6 +20,15 @@ class TokenRefreshAuthenticator @Inject constructor(
     private val tokenManager: TokenManager,
     private val json: Json,
 ) : Authenticator {
+
+    // Dedicated client for token refresh — separate from the main OkHttpClient to
+    // avoid circular dependency and prevent the refresh call itself going through
+    // the AuthInterceptor / this authenticator again.
+    private val refreshClient: OkHttpClient = OkHttpClient.Builder()
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .build()
 
     override fun authenticate(route: Route?, response: Response): Request? {
         // Don't retry if we already attempted a refresh for this request
@@ -32,7 +43,7 @@ class TokenRefreshAuthenticator @Inject constructor(
         }
 
         val refreshed = try {
-            performRefresh(refreshToken, response.request.url.toString())
+            performRefresh(refreshToken)
         } catch (_: Exception) {
             tokenManager.clearTokens()
             return null
@@ -51,17 +62,14 @@ class TokenRefreshAuthenticator @Inject constructor(
             .build()
     }
 
-    private fun performRefresh(refreshToken: String, originalUrl: String): RefreshResponse? {
-        val baseUrl = originalUrl.substringBefore("/api/v2") + "/api/v2"
+    private fun performRefresh(refreshToken: String): RefreshResponse? {
         val body = json.encodeToString(RefreshRequest.serializer(), RefreshRequest(refreshToken))
         val request = Request.Builder()
-            .url("$baseUrl/auth/refresh")
+            .url("${BuildConfig.API_BASE_URL}/auth/refresh")
             .post(body.toRequestBody("application/json".toMediaType()))
-            .header(AuthInterceptor.HEADER_NO_AUTH, "true")
             .build()
 
-        val client = OkHttpClient.Builder().build()
-        val response = client.newCall(request).execute()
+        val response = refreshClient.newCall(request).execute()
 
         if (!response.isSuccessful) return null
 
