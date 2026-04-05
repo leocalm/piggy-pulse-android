@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.AccountSummary
 import com.piggypulse.android.design.component.PpButton
 import com.piggypulse.android.design.theme.PpTheme
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +54,18 @@ fun CustomizeWidgetsSheet(
     val addableAccounts = activeAccounts.filter { account ->
         val widgetId = layout.accountWidgetId(account.id)
         widgetId !in widgetOrder || widgetId in hiddenWidgets
+    }
+
+    val lazyListState = rememberLazyListState()
+    val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
+        // Map list indices back to visible widget indices (offset by 1 for the header item)
+        val fromVisibleIndex = from.index - 1 // subtract header
+        val toVisibleIndex = to.index - 1
+        if (fromVisibleIndex >= 0 && toVisibleIndex >= 0 &&
+            fromVisibleIndex < visibleIds.size && toVisibleIndex < visibleIds.size
+        ) {
+            layout.moveWidget(fromVisibleIndex, toVisibleIndex)
+        }
     }
 
     ModalBottomSheet(
@@ -77,11 +91,12 @@ fun CustomizeWidgetsSheet(
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(
+                state = lazyListState,
                 modifier = Modifier.height(500.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 // Section: Visible Widgets
-                item {
+                item(key = "header_visible") {
                     Text(
                         "VISIBLE",
                         style = MaterialTheme.typography.labelMedium,
@@ -90,36 +105,43 @@ fun CustomizeWidgetsSheet(
                     )
                 }
 
-                itemsIndexed(visibleIds, key = { _, id -> "visible_$id" }) { _, id ->
-                    val label = widgetLabel(id, accounts)
-                    val description = widgetDescription(id)
-                    WidgetRow(
-                        label = label,
-                        description = description,
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.DragHandle,
-                                contentDescription = "Drag to reorder",
-                                tint = PpTheme.colors.textTertiary,
-                                modifier = Modifier.size(20.dp),
-                            )
-                        },
-                        trailingAction = {
-                            IconButton(onClick = { layout.removeWidget(id) }) {
-                                Icon(
-                                    Icons.Default.Close,
-                                    contentDescription = "Remove",
-                                    tint = PpTheme.colors.textTertiary,
-                                )
-                            }
-                        },
-                    )
-                    HorizontalDivider(color = PpTheme.colors.border)
+                items(visibleIds, key = { "visible_$it" }) { id ->
+                    ReorderableItem(reorderableLazyListState, key = "visible_$id") { isDragging ->
+                        val label = widgetLabel(id, accounts)
+                        val description = widgetDescription(id)
+                        WidgetRow(
+                            label = label,
+                            description = description,
+                            leadingIcon = {
+                                IconButton(
+                                    onClick = {},
+                                    modifier = Modifier.draggableHandle(),
+                                ) {
+                                    Icon(
+                                        Icons.Default.DragHandle,
+                                        contentDescription = "Drag to reorder",
+                                        tint = PpTheme.colors.textTertiary,
+                                        modifier = Modifier.size(20.dp),
+                                    )
+                                }
+                            },
+                            trailingAction = {
+                                IconButton(onClick = { layout.removeWidget(id) }) {
+                                    Icon(
+                                        Icons.Default.Close,
+                                        contentDescription = "Remove",
+                                        tint = PpTheme.colors.textTertiary,
+                                    )
+                                }
+                            },
+                        )
+                        HorizontalDivider(color = PpTheme.colors.border)
+                    }
                 }
 
                 // Section: Hidden Widgets
                 if (hiddenStandardIds.isNotEmpty()) {
-                    item {
+                    item(key = "header_hidden") {
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             "HIDDEN",
@@ -150,7 +172,7 @@ fun CustomizeWidgetsSheet(
 
                 // Section: Account Cards
                 if (addableAccounts.isNotEmpty()) {
-                    item {
+                    item(key = "header_accounts") {
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             "ACCOUNT CARDS",
@@ -201,7 +223,7 @@ private fun WidgetRow(
     ) {
         if (leadingIcon != null) {
             leadingIcon()
-            Spacer(modifier = Modifier.padding(start = 8.dp))
+            Spacer(modifier = Modifier.padding(start = 4.dp))
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(

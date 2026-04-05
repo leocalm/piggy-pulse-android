@@ -29,6 +29,9 @@ securityCrypto = "1.1.0-alpha06"
 # Charts
 vico = "2.1.2"
 
+# Reorderable
+reorderable = "2.4.3"
+
 # Coroutines
 coroutines = "1.10.2"
 
@@ -72,6 +75,9 @@ androidx-security-crypto = { group = "androidx.security", name = "security-crypt
 
 # Charts
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+
+# Reorderable
+reorderable = { group = "sh.calvin.reorderable", name = "reorderable", version.ref = "reorderable" }
 
 # Coroutines
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
