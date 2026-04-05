@@ -1,8 +1,13 @@
 package com.piggypulse.android.core.network
 
+import com.piggypulse.android.core.model.AccountDetails
 import com.piggypulse.android.core.model.AccountOptionList
+import com.piggypulse.android.core.model.AccountResponse
 import com.piggypulse.android.core.model.CategoryOptionList
 import com.piggypulse.android.core.model.ChangePasswordRequest
+import com.piggypulse.android.core.model.CreateAccountRequest
+import com.piggypulse.android.core.model.PaginatedAccountSummaries
+import com.piggypulse.android.core.model.UpdateAccountRequest
 import com.piggypulse.android.core.model.CreateTransactionRequest
 import com.piggypulse.android.core.model.ForgotPasswordRequest
 import com.piggypulse.android.core.model.ForgotPasswordResponse
@@ -109,4 +114,42 @@ interface ApiService {
 
     @GET("vendors/options")
     suspend fun getVendorOptions(): Response<VendorOptionList>
+
+    // Accounts
+    @GET("accounts/summary")
+    suspend fun getAccountSummaries(
+        @Query("cursor") cursor: String? = null,
+        @Query("limit") limit: Int? = null,
+    ): Response<PaginatedAccountSummaries>
+
+    @GET("accounts/{id}/details")
+    suspend fun getAccountDetails(
+        @Path("id") id: String,
+    ): Response<AccountDetails>
+
+    @POST("accounts")
+    suspend fun createAccount(
+        @Body request: CreateAccountRequest,
+    ): Response<AccountResponse>
+
+    @PUT("accounts/{id}")
+    suspend fun updateAccount(
+        @Path("id") id: String,
+        @Body request: UpdateAccountRequest,
+    ): Response<AccountResponse>
+
+    @DELETE("accounts/{id}")
+    suspend fun deleteAccount(
+        @Path("id") id: String,
+    ): Response<Unit>
+
+    @POST("accounts/{id}/archive")
+    suspend fun archiveAccount(
+        @Path("id") id: String,
+    ): Response<AccountResponse>
+
+    @POST("accounts/{id}/unarchive")
+    suspend fun unarchiveAccount(
+        @Path("id") id: String,
+    ): Response<AccountResponse>
 }
