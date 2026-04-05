@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 RootNavHost(
                     appState = appState,
                     apiClient = apiClient,
+                    themeManager = themeManager,
                 )
             }
         }

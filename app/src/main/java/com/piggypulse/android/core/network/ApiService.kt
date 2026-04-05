@@ -9,6 +9,8 @@ import com.piggypulse.android.core.model.CategoryOptionList
 import com.piggypulse.android.core.model.CategoryResponse
 import com.piggypulse.android.core.model.ChangePasswordRequest
 import com.piggypulse.android.core.model.CreateAccountRequest
+import com.piggypulse.android.core.model.CreatePeriodRequest
+import com.piggypulse.android.core.model.CreateTargetRequest
 import com.piggypulse.android.core.model.DashboardCashFlow
 import com.piggypulse.android.core.model.DashboardCurrentPeriod
 import com.piggypulse.android.core.model.DashboardFixedCategories
@@ -22,12 +24,22 @@ import com.piggypulse.android.core.model.CreateVendorRequest
 import com.piggypulse.android.core.model.MergeVendorRequest
 import com.piggypulse.android.core.model.PaginatedAccountSummaries
 import com.piggypulse.android.core.model.PaginatedCategories
+import com.piggypulse.android.core.model.PaginatedTargets
+import com.piggypulse.android.core.model.PeriodResponse
+import com.piggypulse.android.core.model.PeriodScheduleResponse
+import com.piggypulse.android.core.model.PreferencesResponse
+import com.piggypulse.android.core.model.ProfileResponse
 import com.piggypulse.android.core.model.PaginatedVendors
 import com.piggypulse.android.core.model.SubscriptionDetailResponse
 import com.piggypulse.android.core.model.SubscriptionListResponse
 import com.piggypulse.android.core.model.SubscriptionResponse
 import com.piggypulse.android.core.model.UpdateAccountRequest
+import com.piggypulse.android.core.model.TargetResponse
 import com.piggypulse.android.core.model.UpdateCategoryRequest
+import com.piggypulse.android.core.model.UpdatePeriodRequest
+import com.piggypulse.android.core.model.UpdatePreferencesRequest
+import com.piggypulse.android.core.model.UpdateProfileRequest
+import com.piggypulse.android.core.model.UpdateTargetRequest
 import com.piggypulse.android.core.model.UpdateSubscriptionRequest
 import com.piggypulse.android.core.model.UpdateVendorRequest
 import com.piggypulse.android.core.model.UpcomingChargesResponse
@@ -338,4 +350,63 @@ interface ApiService {
         @Query("periodId") periodId: String,
         @Query("limit") limit: Int? = 7,
     ): Response<PaginatedTransactions>
+
+    // Periods — additional endpoints
+    @POST("periods")
+    suspend fun createPeriod(
+        @Body request: CreatePeriodRequest,
+    ): Response<PeriodResponse>
+
+    @PUT("periods/{id}")
+    suspend fun updatePeriod(
+        @Path("id") id: String,
+        @Body request: UpdatePeriodRequest,
+    ): Response<PeriodResponse>
+
+    @DELETE("periods/{id}")
+    suspend fun deletePeriod(
+        @Path("id") id: String,
+    ): Response<Unit>
+
+    @GET("periods/schedule")
+    suspend fun getPeriodSchedule(): Response<PeriodScheduleResponse>
+
+    // Targets
+    @GET("targets")
+    suspend fun getTargets(
+        @Query("periodId") periodId: String,
+        @Query("cursor") cursor: String? = null,
+        @Query("limit") limit: Int? = null,
+    ): Response<PaginatedTargets>
+
+    @POST("targets")
+    suspend fun createTarget(
+        @Body request: CreateTargetRequest,
+    ): Response<TargetResponse>
+
+    @PUT("targets/{id}")
+    suspend fun updateTarget(
+        @Path("id") id: String,
+        @Body request: UpdateTargetRequest,
+    ): Response<TargetResponse>
+
+    // Settings
+    @GET("settings/profile")
+    suspend fun getProfile(): Response<ProfileResponse>
+
+    @PUT("settings/profile")
+    suspend fun updateProfile(
+        @Body request: UpdateProfileRequest,
+    ): Response<ProfileResponse>
+
+    @GET("settings/preferences")
+    suspend fun getPreferences(): Response<PreferencesResponse>
+
+    @PUT("settings/preferences")
+    suspend fun updatePreferences(
+        @Body request: UpdatePreferencesRequest,
+    ): Response<PreferencesResponse>
+
+    @DELETE("settings/account")
+    suspend fun deleteUserAccount(): Response<Unit>
 }

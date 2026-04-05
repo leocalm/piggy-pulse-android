@@ -31,9 +31,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Store
+import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.ui.Alignment
 import com.piggypulse.android.app.AppState
 import com.piggypulse.android.design.component.PpButton
@@ -45,13 +48,18 @@ import com.piggypulse.android.feature.accounts.AccountDetailScreen
 import com.piggypulse.android.feature.accounts.AccountsScreen
 import com.piggypulse.android.feature.categories.CategoriesScreen
 import com.piggypulse.android.feature.dashboard.DashboardScreen
+import com.piggypulse.android.feature.periods.PeriodsScreen
+import com.piggypulse.android.feature.settings.SettingsScreen
 import com.piggypulse.android.feature.subscriptions.SubscriptionsScreen
+import com.piggypulse.android.feature.targets.TargetsScreen
 import com.piggypulse.android.feature.transactions.TransactionsScreen
 import com.piggypulse.android.feature.vendors.VendorsScreen
+import com.piggypulse.android.design.theme.ThemeManager
 
 @Composable
 fun MainScaffold(
     appState: AppState,
+    themeManager: ThemeManager,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -173,6 +181,22 @@ fun MainScaffold(
                         onNavigateToDetail = { id -> navController.navigate(Route.SubscriptionDetail(id)) },
                     )
                 }
+                composable<Route.Periods> {
+                    PeriodsScreen()
+                }
+                composable<Route.Targets> {
+                    val currentUser by appState.currentUser.collectAsState()
+                    TargetsScreen(
+                        periodId = selectedPeriodId,
+                        currencyCode = currentUser?.currency ?: "EUR",
+                    )
+                }
+                composable<Route.Settings> {
+                    SettingsScreen(
+                        appState = appState,
+                        themeManager = themeManager,
+                    )
+                }
             }
         }
     }
@@ -225,6 +249,27 @@ private fun MoreScreen(
                 icon = Icons.Default.Repeat,
                 label = "Subscriptions",
                 onClick = { onNavigate(Route.Subscriptions) },
+            )
+        }
+        item {
+            MoreMenuItem(
+                icon = Icons.Default.CalendarMonth,
+                label = "Periods",
+                onClick = { onNavigate(Route.Periods) },
+            )
+        }
+        item {
+            MoreMenuItem(
+                icon = Icons.Default.TrackChanges,
+                label = "Targets",
+                onClick = { onNavigate(Route.Targets) },
+            )
+        }
+        item {
+            MoreMenuItem(
+                icon = Icons.Default.Settings,
+                label = "Settings",
+                onClick = { onNavigate(Route.Settings) },
             )
         }
         item {
