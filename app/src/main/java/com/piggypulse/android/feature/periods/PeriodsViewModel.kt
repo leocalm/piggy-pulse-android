@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.piggypulse.android.core.model.BudgetPeriod
 import com.piggypulse.android.core.model.CreatePeriodRequest
-import com.piggypulse.android.core.model.PeriodDuration
 import com.piggypulse.android.core.model.PeriodScheduleResponse
-import com.piggypulse.android.core.model.UpdatePeriodRequest
 import com.piggypulse.android.core.repository.PeriodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -33,9 +31,6 @@ class PeriodsViewModel @Inject constructor(
     private val _showCreateForm = MutableStateFlow(false)
     val showCreateForm: StateFlow<Boolean> = _showCreateForm.asStateFlow()
 
-    private val _editingPeriod = MutableStateFlow<BudgetPeriod?>(null)
-    val editingPeriod: StateFlow<BudgetPeriod?> = _editingPeriod.asStateFlow()
-
     private var loadJob: Job? = null
 
     fun load() {
@@ -49,34 +44,16 @@ class PeriodsViewModel @Inject constructor(
     }
 
     fun openCreateForm() { _showCreateForm.value = true }
+    fun closeForm() { _showCreateForm.value = false }
 
-    fun openEditForm(period: BudgetPeriod) { _editingPeriod.value = period }
-
-    fun closeForm() {
-        _showCreateForm.value = false
-        _editingPeriod.value = null
-    }
-
-    fun create(name: String, startDate: String, durationUnits: Int, durationUnit: String) {
+    fun createManualEndDate(name: String, startDate: String, endDate: String) {
         viewModelScope.launch {
             repository.create(
                 CreatePeriodRequest(
                     name = name,
                     startDate = startDate,
-                    duration = PeriodDuration(durationUnits, durationUnit),
-                ),
-            ).onSuccess { closeForm(); load() }
-        }
-    }
-
-    fun update(id: String, name: String, startDate: String, durationUnits: Int, durationUnit: String) {
-        viewModelScope.launch {
-            repository.update(
-                id,
-                UpdatePeriodRequest(
-                    name = name,
-                    startDate = startDate,
-                    duration = PeriodDuration(durationUnits, durationUnit),
+                    periodType = "manualEndDate",
+                    manualEndDate = endDate,
                 ),
             ).onSuccess { closeForm(); load() }
         }

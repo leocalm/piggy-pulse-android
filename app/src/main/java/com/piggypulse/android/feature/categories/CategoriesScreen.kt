@@ -60,7 +60,7 @@ fun CategoriesScreen(
         derivedStateOf { viewModel.filteredCategories }
     }
 
-    val tabs = listOf("expense" to "Expense", "income" to "Income", "transfer" to "Transfer")
+    val tabs = listOf("expense" to "Expense", "income" to "Income")
     val selectedIndex = tabs.indexOfFirst { it.first == selectedTab }.coerceAtLeast(0)
 
     LaunchedEffect(Unit) { viewModel.load() }
