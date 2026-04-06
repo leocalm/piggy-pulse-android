@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -18,6 +16,8 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -52,6 +52,14 @@ fun TransactionFormSheet(
 ) {
     val isEditing = transaction != null
 
+    // Separate transfer category from visible categories
+    val transferCategory = filterOptions.categories.firstOrNull {
+        it.name.equals("Transfer", ignoreCase = true)
+    }
+    val visibleCategories = filterOptions.categories.filter {
+        !it.name.equals("Transfer", ignoreCase = true)
+    }
+
     var description by remember { mutableStateOf(transaction?.description ?: "") }
     var amountText by remember {
         mutableStateOf(
@@ -84,6 +92,39 @@ fun TransactionFormSheet(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Transfer toggle
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Transfer between accounts",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PpTheme.colors.textPrimary,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(
+                    checked = isTransfer,
+                    onCheckedChange = { transfer ->
+                        isTransfer = transfer
+                        if (transfer) {
+                            // Auto-select transfer category, clear vendor
+                            selectedCategoryId = transferCategory?.id
+                            selectedVendorId = null
+                        } else {
+                            // Clear to-account, clear transfer category
+                            selectedToAccountId = null
+                            if (selectedCategoryId == transferCategory?.id) {
+                                selectedCategoryId = null
+                            }
+                        }
+                    },
+                    colors = SwitchDefaults.colors(checkedTrackColor = PpTheme.colors.primary),
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Amount
             PpTextField(
                 value = amountText,
                 onValueChange = { amountText = it },
@@ -93,6 +134,7 @@ fun TransactionFormSheet(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Description
             PpTextField(
                 value = description,
                 onValueChange = { description = it },
@@ -101,6 +143,7 @@ fun TransactionFormSheet(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Date
             PpTextField(
                 value = date,
                 onValueChange = { date = it },
@@ -109,57 +152,42 @@ fun TransactionFormSheet(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Category dropdown
+            // From account
             OptionDropdown(
-                label = "Category",
-                options = filterOptions.categories.map { it.id to "${it.icon} ${it.name}" },
-                selectedId = selectedCategoryId,
-                onSelect = { selectedCategoryId = it },
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // From account dropdown
-            OptionDropdown(
-                label = "Account",
+                label = if (isTransfer) "From account" else "Account",
                 options = filterOptions.accounts.map { it.id to it.name },
                 selectedId = selectedFromAccountId,
                 onSelect = { selectedFromAccountId = it },
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Vendor dropdown (optional)
-            OptionDropdown(
-                label = "Vendor (optional)",
-                options = listOf("" to "None") + filterOptions.vendors.map { it.id to it.name },
-                selectedId = selectedVendorId ?: "",
-                onSelect = { selectedVendorId = it.ifEmpty { null } },
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Transfer toggle — when enabled a "To account" selector is shown
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Checkbox(
-                    checked = isTransfer,
-                    onCheckedChange = { isTransfer = it },
-                    colors = CheckboxDefaults.colors(checkedColor = PpTheme.colors.primary),
-                )
-                Text(
-                    text = "Transfer between accounts",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = PpTheme.colors.textPrimary,
-                )
-            }
-
             if (isTransfer) {
-                Spacer(modifier = Modifier.height(12.dp))
+                // To account (transfer only)
                 OptionDropdown(
                     label = "To account",
-                    options = listOf("" to "Select account") + filterOptions.accounts.map { it.id to it.name },
+                    options = listOf("" to "Select account") +
+                        filterOptions.accounts
+                            .filter { it.id != selectedFromAccountId }
+                            .map { it.id to it.name },
                     selectedId = selectedToAccountId ?: "",
                     onSelect = { selectedToAccountId = it.ifEmpty { null } },
+                )
+            } else {
+                // Category (non-transfer only, excludes "Transfer")
+                OptionDropdown(
+                    label = "Category",
+                    options = visibleCategories.map { it.id to "${it.icon} ${it.name}" },
+                    selectedId = selectedCategoryId,
+                    onSelect = { selectedCategoryId = it },
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Vendor (non-transfer only)
+                OptionDropdown(
+                    label = "Vendor (optional)",
+                    options = listOf("" to "None") + filterOptions.vendors.map { it.id to it.name },
+                    selectedId = selectedVendorId ?: "",
+                    onSelect = { selectedVendorId = it.ifEmpty { null } },
                 )
             }
 
@@ -168,9 +196,12 @@ fun TransactionFormSheet(
             val amount = amountText.toDoubleOrNull()
             val canSave = amount != null && amount > 0 &&
                 description.isNotBlank() &&
-                selectedCategoryId != null &&
                 selectedFromAccountId != null &&
-                (!isTransfer || selectedToAccountId != null)
+                if (isTransfer) {
+                    selectedToAccountId != null && selectedCategoryId != null
+                } else {
+                    selectedCategoryId != null
+                }
 
             PpButton(
                 text = if (isEditing) "Save changes" else "Create transaction",
@@ -188,7 +219,7 @@ fun TransactionFormSheet(
                                 categoryId = selectedCategoryId!!,
                                 transactionType = type,
                                 toAccountId = selectedToAccountId,
-                                vendorId = selectedVendorId,
+                                vendorId = if (isTransfer) null else selectedVendorId,
                             ),
                         )
                     } else {
@@ -201,7 +232,7 @@ fun TransactionFormSheet(
                                 categoryId = selectedCategoryId!!,
                                 transactionType = type,
                                 toAccountId = selectedToAccountId,
-                                vendorId = selectedVendorId,
+                                vendorId = if (isTransfer) null else selectedVendorId,
                             ),
                         )
                     }
