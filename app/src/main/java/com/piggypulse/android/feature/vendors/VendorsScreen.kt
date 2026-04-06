@@ -121,7 +121,7 @@ fun VendorsScreen(
                         VendorRow(
                             vendor = vendor,
                             currencyCode = currencyCode,
-                            onClick = { onNavigateToDetail(vendor.id) },
+                            onClick = { viewModel.openEditForm(vendor) },
                             onEdit = { viewModel.openEditForm(vendor) },
                             onDelete = { viewModel.delete(vendor.id) },
                         )

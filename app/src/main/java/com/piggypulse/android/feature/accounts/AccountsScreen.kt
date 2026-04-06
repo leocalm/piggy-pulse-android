@@ -131,7 +131,7 @@ fun AccountsScreen(
                         AccountCard(
                             account = account,
                             currencyCode = currencyCode,
-                            onClick = { onNavigateToDetail(account.id) },
+                            onClick = { viewModel.openEditForm(account) },
                             onEdit = { viewModel.openEditForm(account) },
                             onArchive = { viewModel.archiveAccount(account.id) },
                             onDelete = { viewModel.deleteAccount(account.id) },
