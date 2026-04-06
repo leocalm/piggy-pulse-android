@@ -11,6 +11,7 @@ import com.piggypulse.android.core.model.CategoryResponse
 import com.piggypulse.android.core.model.ChangePasswordRequest
 import com.piggypulse.android.core.model.CreateAccountRequest
 import com.piggypulse.android.core.model.CreatePeriodRequest
+import com.piggypulse.android.core.model.CreateScheduleRequest
 import com.piggypulse.android.core.model.CreateTargetRequest
 import com.piggypulse.android.core.model.DashboardCashFlow
 import com.piggypulse.android.core.model.DashboardCurrentPeriod
@@ -384,6 +385,19 @@ interface ApiService {
 
     @GET("periods/schedule")
     suspend fun getPeriodSchedule(): Response<PeriodScheduleResponse>
+
+    @POST("periods/schedule")
+    suspend fun createPeriodSchedule(
+        @Body request: CreateScheduleRequest,
+    ): Response<PeriodScheduleResponse>
+
+    @PUT("periods/schedule")
+    suspend fun updatePeriodSchedule(
+        @Body request: CreateScheduleRequest,
+    ): Response<PeriodScheduleResponse>
+
+    @DELETE("periods/schedule")
+    suspend fun deletePeriodSchedule(): Response<Unit>
 
     // Targets
     @GET("targets")

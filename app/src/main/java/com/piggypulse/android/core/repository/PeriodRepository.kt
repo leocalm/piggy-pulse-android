@@ -2,6 +2,7 @@ package com.piggypulse.android.core.repository
 
 import com.piggypulse.android.core.model.BudgetPeriod
 import com.piggypulse.android.core.model.CreatePeriodRequest
+import com.piggypulse.android.core.model.CreateScheduleRequest
 import com.piggypulse.android.core.model.PeriodResponse
 import com.piggypulse.android.core.model.PeriodScheduleResponse
 import com.piggypulse.android.core.model.UpdatePeriodRequest
@@ -32,5 +33,17 @@ class PeriodRepository @Inject constructor(
 
     suspend fun delete(id: String): Result<Unit> {
         return apiClient.requestUnit { apiClient.service.deletePeriod(id) }
+    }
+
+    suspend fun createSchedule(request: CreateScheduleRequest): Result<PeriodScheduleResponse> {
+        return apiClient.request { apiClient.service.createPeriodSchedule(request) }
+    }
+
+    suspend fun updateSchedule(request: CreateScheduleRequest): Result<PeriodScheduleResponse> {
+        return apiClient.request { apiClient.service.updatePeriodSchedule(request) }
+    }
+
+    suspend fun deleteSchedule(): Result<Unit> {
+        return apiClient.requestUnit { apiClient.service.deletePeriodSchedule() }
     }
 }

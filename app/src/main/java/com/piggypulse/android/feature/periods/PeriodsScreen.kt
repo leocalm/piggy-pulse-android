@@ -1,6 +1,7 @@
 package com.piggypulse.android.feature.periods
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -123,8 +124,38 @@ fun PeriodsScreen(
 
                 // Schedule status pill
                 item(key = "schedule_status") {
-                    val hasSchedule = schedule != null && schedule?.schedule != "manual"
-                    ScheduleStatusPill(hasSchedule = hasSchedule)
+                    val hasSchedule = schedule != null && schedule?.scheduleType == "automatic"
+                    ScheduleStatusPill(
+                        hasSchedule = hasSchedule,
+                        onClick = { viewModel.openScheduleForm() },
+                    )
+                }
+
+                // Schedule config card
+                item(key = "schedule_config") {
+                    val hasSchedule = schedule != null && schedule?.scheduleType == "automatic"
+                    PpCard(modifier = Modifier.clickable { viewModel.openScheduleForm() }) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text("Auto-creation", style = MaterialTheme.typography.titleSmall, color = PpTheme.colors.textPrimary)
+                                Text("Configure automatic period generation", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textSecondary)
+                            }
+                            Surface(
+                                color = (if (hasSchedule) PpTheme.colors.tertiary else PpTheme.colors.secondary).copy(alpha = 0.12f),
+                                shape = RoundedCornerShape(12.dp),
+                            ) {
+                                Text(
+                                    if (hasSchedule) "Enabled" else "Not set up",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (hasSchedule) PpTheme.colors.tertiary else PpTheme.colors.secondary,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                )
+                            }
+                        }
+                    }
                 }
 
                 grouped.forEach { (year, yearPeriods) ->
@@ -175,10 +206,20 @@ fun PeriodsScreen(
             onDismiss = { viewModel.closeForm() },
         )
     }
+
+    val showScheduleForm by viewModel.showScheduleForm.collectAsState()
+    if (showScheduleForm) {
+        AutoCreationSheet(
+            schedule = schedule,
+            onSave = { request -> viewModel.saveSchedule(request) },
+            onDelete = { viewModel.deleteSchedule() },
+            onDismiss = { viewModel.closeScheduleForm() },
+        )
+    }
 }
 
 @Composable
-private fun ScheduleStatusPill(hasSchedule: Boolean) {
+private fun ScheduleStatusPill(hasSchedule: Boolean, onClick: () -> Unit = {}) {
     val color = if (hasSchedule) PpTheme.colors.tertiary else PpTheme.colors.secondary
     Surface(
         color = color.copy(alpha = 0.12f),
