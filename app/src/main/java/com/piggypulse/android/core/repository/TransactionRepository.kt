@@ -60,9 +60,9 @@ class TransactionRepository @Inject constructor(
 
                 Result.success(
                     TransactionFilterOptions(
-                        accounts = a?.data ?: emptyList(),
-                        categories = c?.data ?: emptyList(),
-                        vendors = v?.data ?: emptyList(),
+                        accounts = a ?: emptyList(),
+                        categories = c ?: emptyList(),
+                        vendors = v ?: emptyList(),
                     ),
                 )
             }

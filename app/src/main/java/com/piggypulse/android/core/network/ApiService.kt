@@ -1,11 +1,11 @@
 package com.piggypulse.android.core.network
 
 import com.piggypulse.android.core.model.AccountDetails
-import com.piggypulse.android.core.model.AccountOptionList
+import com.piggypulse.android.core.model.AccountOption
 import com.piggypulse.android.core.model.AccountResponse
 import com.piggypulse.android.core.model.CancelSubscriptionRequest
 import com.piggypulse.android.core.model.CategoryDetail
-import com.piggypulse.android.core.model.CategoryOptionList
+import com.piggypulse.android.core.model.CategoryOption
 import com.piggypulse.android.core.model.CategoryOverviewResponse
 import com.piggypulse.android.core.model.CategoryResponse
 import com.piggypulse.android.core.model.ChangePasswordRequest
@@ -66,7 +66,7 @@ import com.piggypulse.android.core.model.Transaction
 import com.piggypulse.android.core.model.TwoFactorRequest
 import com.piggypulse.android.core.model.UpdateTransactionRequest
 import com.piggypulse.android.core.model.User
-import com.piggypulse.android.core.model.VendorOptionList
+import com.piggypulse.android.core.model.VendorOption
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -153,13 +153,13 @@ interface ApiService {
 
     // Filter options
     @GET("accounts/options")
-    suspend fun getAccountOptions(): Response<AccountOptionList>
+    suspend fun getAccountOptions(): Response<List<AccountOption>>
 
     @GET("categories/options")
-    suspend fun getCategoryOptions(): Response<CategoryOptionList>
+    suspend fun getCategoryOptions(): Response<List<CategoryOption>>
 
     @GET("vendors/options")
-    suspend fun getVendorOptions(): Response<VendorOptionList>
+    suspend fun getVendorOptions(): Response<List<VendorOption>>
 
     // Accounts
     @GET("accounts/summary")

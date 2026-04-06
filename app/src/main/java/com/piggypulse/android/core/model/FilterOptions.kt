@@ -23,21 +23,7 @@ data class VendorOption(
     val name: String,
 )
 
-@Serializable
-data class AccountOptionList(
-    val data: List<AccountOption>,
-)
-
-@Serializable
-data class CategoryOptionList(
-    val data: List<CategoryOption>,
-)
-
-@Serializable
-data class VendorOptionList(
-    val data: List<VendorOption>,
-    val nextCursor: String? = null,
-)
+// API returns bare arrays for all option endpoints
 
 data class TransactionFilterOptions(
     val accounts: List<AccountOption> = emptyList(),
