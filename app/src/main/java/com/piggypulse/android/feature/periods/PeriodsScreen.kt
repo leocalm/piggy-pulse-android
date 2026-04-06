@@ -335,37 +335,34 @@ private fun CreatePeriodSheet(
 
                     if (endRuleMode == "duration") {
                         Spacer(modifier = Modifier.height(12.dp))
+                        PpTextField(
+                            value = duration.toString(),
+                            onValueChange = { duration = it.toIntOrNull() ?: 1 },
+                            label = "Duration",
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text("Unit", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textSecondary)
+                        Spacer(modifier = Modifier.height(4.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            PpTextField(
-                                value = duration.toString(),
-                                onValueChange = { duration = it.toIntOrNull() ?: 1 },
-                                label = "Duration",
-                                modifier = Modifier.weight(1f),
-                            )
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text("Unit", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textSecondary)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    listOf("days", "weeks", "months").forEach { unit ->
-                                        FilterChip(
-                                            selected = durationUnit == unit,
-                                            onClick = { durationUnit = unit },
-                                            label = { Text(unit.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.labelSmall) },
-                                            colors = FilterChipDefaults.filterChipColors(
-                                                selectedContainerColor = PpTheme.colors.primary.copy(alpha = 0.15f),
-                                                selectedLabelColor = PpTheme.colors.primary,
-                                                containerColor = Color.Transparent,
-                                                labelColor = PpTheme.colors.textSecondary,
-                                            ),
-                                            border = FilterChipDefaults.filterChipBorder(
-                                                borderColor = PpTheme.colors.border,
-                                                selectedBorderColor = PpTheme.colors.primary.copy(alpha = 0.3f),
-                                                enabled = true,
-                                                selected = durationUnit == unit,
-                                            ),
-                                        )
-                                    }
-                                }
+                            listOf("days", "weeks", "months").forEach { unit ->
+                                FilterChip(
+                                    selected = durationUnit == unit,
+                                    onClick = { durationUnit = unit },
+                                    label = { Text(unit.replaceFirstChar { it.uppercase() }) },
+                                    colors = FilterChipDefaults.filterChipColors(
+                                        selectedContainerColor = PpTheme.colors.primary.copy(alpha = 0.15f),
+                                        selectedLabelColor = PpTheme.colors.primary,
+                                        containerColor = Color.Transparent,
+                                        labelColor = PpTheme.colors.textSecondary,
+                                    ),
+                                    border = FilterChipDefaults.filterChipBorder(
+                                        borderColor = PpTheme.colors.border,
+                                        selectedBorderColor = PpTheme.colors.primary.copy(alpha = 0.3f),
+                                        enabled = true,
+                                        selected = durationUnit == unit,
+                                    ),
+                                )
                             }
                         }
                     }
