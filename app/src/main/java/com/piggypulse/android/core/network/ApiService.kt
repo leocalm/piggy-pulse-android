@@ -332,7 +332,9 @@ interface ApiService {
     ): Response<DashboardCurrentPeriod>
 
     @GET("dashboard/net-position")
-    suspend fun getDashboardNetPosition(): Response<DashboardNetPosition>
+    suspend fun getDashboardNetPosition(
+        @Query("periodId") periodId: String,
+    ): Response<DashboardNetPosition>
 
     @GET("dashboard/cash-flow")
     suspend fun getDashboardCashFlow(
