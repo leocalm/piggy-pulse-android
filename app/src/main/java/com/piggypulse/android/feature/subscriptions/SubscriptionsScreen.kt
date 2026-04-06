@@ -187,7 +187,7 @@ fun SubscriptionsScreen(
                             SubscriptionRow(
                                 subscription = subscription,
                                 currencyCode = currencyCode,
-                                onClick = { onNavigateToDetail(subscription.id) },
+                                onClick = { viewModel.openEditForm(subscription) },
                                 onEdit = { viewModel.openEditForm(subscription) },
                                 onCancel = { viewModel.cancel(subscription.id, null) },
                                 onDelete = { viewModel.delete(subscription.id) },
