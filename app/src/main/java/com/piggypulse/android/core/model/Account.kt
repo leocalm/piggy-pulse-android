@@ -40,7 +40,7 @@ data class AccountDetails(
 data class CreateAccountRequest(
     val name: String,
     val color: String,
-    val accountType: String,
+    val type: String,
     val initialBalance: Long = 0,
     val currencyId: String? = null,
     val spendLimit: Long? = null,
@@ -50,7 +50,7 @@ data class CreateAccountRequest(
 data class UpdateAccountRequest(
     val name: String,
     val color: String,
-    val accountType: String,
+    val type: String,
     val spendLimit: Long? = null,
 )
 

@@ -64,6 +64,7 @@ fun AccountFormSheet(
         )
     }
     var initialBalanceText by remember { mutableStateOf("0") }
+    var spendLimitText by remember { mutableStateOf("") }
     var typeExpanded by remember { mutableStateOf(false) }
 
     ModalBottomSheet(
@@ -150,6 +151,18 @@ fun AccountFormSheet(
                 }
             }
 
+            // Spend limit (only for CreditCard and Allowance)
+            if (selectedType == AccountType.CreditCard || selectedType == AccountType.Allowance) {
+                Spacer(modifier = Modifier.height(12.dp))
+                PpTextField(
+                    value = spendLimitText,
+                    onValueChange = { spendLimitText = it },
+                    label = "Spend limit",
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                )
+            }
+
             if (!isEditing) {
                 Spacer(modifier = Modifier.height(12.dp))
                 PpTextField(
@@ -166,13 +179,17 @@ fun AccountFormSheet(
             PpButton(
                 text = if (isEditing) "Save changes" else "Create account",
                 onClick = {
+                    val spendLimit = spendLimitText.toDoubleOrNull()?.let {
+                        CurrencyFormatter.displayToCents(it)
+                    }
                     if (isEditing) {
                         onUpdate(
                             account!!.id,
                             UpdateAccountRequest(
                                 name = name,
                                 color = color,
-                                accountType = selectedType.apiValue,
+                                type = selectedType.apiValue,
+                                spendLimit = spendLimit,
                             ),
                         )
                     } else {
@@ -181,8 +198,9 @@ fun AccountFormSheet(
                             CreateAccountRequest(
                                 name = name,
                                 color = color,
-                                accountType = selectedType.apiValue,
+                                type = selectedType.apiValue,
                                 initialBalance = CurrencyFormatter.displayToCents(balance),
+                                spendLimit = spendLimit,
                             ),
                         )
                     }
