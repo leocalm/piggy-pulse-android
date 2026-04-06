@@ -55,6 +55,7 @@ fun CategoryFormSheet(
     onDismiss: () -> Unit,
     onDeleteSubscription: ((String) -> Unit)? = null,
     onCancelSubscription: ((String) -> Unit)? = null,
+    onAddSubscription: (() -> Unit)? = null,
 ) {
     val isEditing = category != null
     var name by remember { mutableStateOf(category?.name ?: "") }
@@ -150,12 +151,13 @@ fun CategoryFormSheet(
 
             // Subscription section
             if (behavior == "subscription") {
-                if (isEditing && subscriptions.isNotEmpty()) {
+                if (isEditing) {
                     CategorySubscriptionSection(
                         subscriptions = subscriptions,
                         currencyCode = currencyCode,
                         onCancel = onCancelSubscription,
                         onDelete = onDeleteSubscription,
+                        onAddSubscription = onAddSubscription,
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 } else if (!isEditing) {
@@ -218,6 +220,7 @@ private fun CategorySubscriptionSection(
     currencyCode: String,
     onCancel: ((String) -> Unit)?,
     onDelete: ((String) -> Unit)?,
+    onAddSubscription: (() -> Unit)? = null,
 ) {
     val monthlyTotal = subscriptions
         .filter { it.status.equals("active", ignoreCase = true) }
@@ -281,5 +284,23 @@ private fun CategorySubscriptionSection(
             }
         }
         HorizontalDivider(color = PpTheme.colors.border)
+    }
+
+    if (subscriptions.isEmpty()) {
+        Text(
+            "No subscriptions yet",
+            style = MaterialTheme.typography.bodySmall,
+            color = PpTheme.colors.textTertiary,
+            modifier = Modifier.padding(vertical = 8.dp),
+        )
+    }
+
+    if (onAddSubscription != null) {
+        Spacer(modifier = Modifier.height(8.dp))
+        PpButton(
+            text = "Add subscription",
+            onClick = onAddSubscription,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }

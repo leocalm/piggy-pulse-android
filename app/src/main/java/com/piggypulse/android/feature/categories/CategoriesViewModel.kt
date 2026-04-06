@@ -40,6 +40,9 @@ class CategoriesViewModel @Inject constructor(
     private val _selectedTab = MutableStateFlow("expense")
     val selectedTab: StateFlow<String> = _selectedTab.asStateFlow()
 
+    private val _showAddSubscription = MutableStateFlow(false)
+    val showAddSubscription: StateFlow<Boolean> = _showAddSubscription.asStateFlow()
+
     private var loadJob: Job? = null
 
     val filteredCategories: List<CategoryListItem>
@@ -123,6 +126,18 @@ class CategoriesViewModel @Inject constructor(
     fun deleteSubscription(subscriptionId: String) {
         viewModelScope.launch {
             subscriptionRepository.delete(subscriptionId).onSuccess {
+                _editingCategory.value?.let { loadCategorySubscriptions(it.id) }
+            }
+        }
+    }
+
+    fun openAddSubscription() { _showAddSubscription.value = true }
+    fun closeAddSubscription() { _showAddSubscription.value = false }
+
+    fun createSubscription(request: com.piggypulse.android.core.model.CreateSubscriptionRequest) {
+        viewModelScope.launch {
+            subscriptionRepository.create(request).onSuccess {
+                closeAddSubscription()
                 _editingCategory.value?.let { loadCategorySubscriptions(it.id) }
             }
         }

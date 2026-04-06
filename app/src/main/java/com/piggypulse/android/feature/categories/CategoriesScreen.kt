@@ -137,7 +137,7 @@ fun CategoriesScreen(
                     items(filtered, key = { it.id }) { category ->
                         CategoryRow(
                             category = category,
-                            onClick = { onNavigateToDetail(category.id) },
+                            onClick = { viewModel.openEditForm(category) },
                             onEdit = { viewModel.openEditForm(category) },
                             onArchive = { viewModel.archive(category.id) },
                             onDelete = { viewModel.delete(category.id) },
@@ -160,6 +160,22 @@ fun CategoriesScreen(
             onDismiss = { viewModel.closeForm() },
             onCancelSubscription = { viewModel.cancelSubscription(it) },
             onDeleteSubscription = { viewModel.deleteSubscription(it) },
+            onAddSubscription = { viewModel.openAddSubscription() },
+        )
+    }
+
+    val showAddSubscription by viewModel.showAddSubscription.collectAsState()
+    if (showAddSubscription && editingCategory != null) {
+        com.piggypulse.android.feature.subscriptions.SubscriptionFormSheet(
+            subscription = null,
+            onSave = { request ->
+                // Override categoryId with the editing category
+                viewModel.createSubscription(
+                    request.copy(categoryId = editingCategory!!.id),
+                )
+            },
+            onUpdate = { _, _ -> },
+            onDismiss = { viewModel.closeAddSubscription() },
         )
     }
 }
