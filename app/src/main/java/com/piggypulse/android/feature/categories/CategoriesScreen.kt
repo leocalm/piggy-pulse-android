@@ -168,12 +168,9 @@ fun CategoriesScreen(
     if (showAddSubscription && editingCategory != null) {
         com.piggypulse.android.feature.subscriptions.SubscriptionFormSheet(
             subscription = null,
-            onSave = { request ->
-                // Override categoryId with the editing category
-                viewModel.createSubscription(
-                    request.copy(categoryId = editingCategory!!.id),
-                )
-            },
+            fixedCategoryId = editingCategory!!.id,
+            fixedCategoryName = "${editingCategory!!.icon} ${editingCategory!!.name}",
+            onSave = { viewModel.createSubscription(it) },
             onUpdate = { _, _ -> },
             onDismiss = { viewModel.closeAddSubscription() },
         )

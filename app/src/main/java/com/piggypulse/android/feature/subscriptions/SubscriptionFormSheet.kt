@@ -37,6 +37,8 @@ fun SubscriptionFormSheet(
     onSave: (CreateSubscriptionRequest) -> Unit,
     onUpdate: (String, UpdateSubscriptionRequest) -> Unit,
     onDismiss: () -> Unit,
+    fixedCategoryId: String? = null,
+    fixedCategoryName: String? = null,
 ) {
     val isEditing = subscription != null
     var name by remember { mutableStateOf(subscription?.name ?: "") }
@@ -49,7 +51,7 @@ fun SubscriptionFormSheet(
     var billingCycle by remember { mutableStateOf(subscription?.billingCycle ?: "monthly") }
     var billingDayText by remember { mutableStateOf(subscription?.billingDay?.toString() ?: "1") }
     var nextChargeDate by remember { mutableStateOf(subscription?.nextChargeDate ?: LocalDate.now().toString()) }
-    var categoryId by remember { mutableStateOf(subscription?.categoryId ?: "") }
+    var categoryId by remember { mutableStateOf(fixedCategoryId ?: subscription?.categoryId ?: "") }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -68,6 +70,18 @@ fun SubscriptionFormSheet(
                 color = PpTheme.colors.textPrimary,
             )
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Category (read-only when opened from category form)
+            if (fixedCategoryName != null) {
+                PpTextField(
+                    value = fixedCategoryName,
+                    onValueChange = {},
+                    label = "Category",
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = false,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
             PpTextField(
                 value = name,
@@ -107,14 +121,6 @@ fun SubscriptionFormSheet(
                 value = nextChargeDate,
                 onValueChange = { nextChargeDate = it },
                 label = "Next charge date (YYYY-MM-DD)",
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            PpTextField(
-                value = categoryId,
-                onValueChange = { categoryId = it },
-                label = "Category ID",
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(24.dp))
