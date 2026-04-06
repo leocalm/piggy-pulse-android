@@ -1,10 +1,18 @@
 package com.piggypulse.android.feature.accounts
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -17,6 +25,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +44,8 @@ import com.piggypulse.android.design.component.PpButton
 import com.piggypulse.android.design.component.PpTextField
 import com.piggypulse.android.design.theme.PpTheme
 
+private val colorOptions = listOf("#007AFF", "#00B894", "#E17055", "#0984E3", "#FDCB6E", "#E84393", "#00CEC9", "#636E72")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountFormSheet(
@@ -45,7 +57,7 @@ fun AccountFormSheet(
     val isEditing = account != null
 
     var name by remember { mutableStateOf(account?.name ?: "") }
-    var color by remember { mutableStateOf(account?.color ?: "#8B7EC8") }
+    var color by remember { mutableStateOf(account?.color ?: colorOptions.first()) }
     var selectedType by remember {
         mutableStateOf(
             AccountType.entries.firstOrNull { it.apiValue == account?.type } ?: AccountType.Checking,
@@ -111,12 +123,32 @@ fun AccountFormSheet(
             }
             Spacer(modifier = Modifier.height(12.dp))
 
-            PpTextField(
-                value = color,
-                onValueChange = { color = it },
-                label = "Color (hex)",
+            // Color picker
+            Text("Color", style = MaterialTheme.typography.bodySmall, color = PpTheme.colors.textSecondary)
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-            )
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                colorOptions.forEach { c ->
+                    val parsedColor = try {
+                        Color(android.graphics.Color.parseColor(c))
+                    } catch (_: Exception) {
+                        PpTheme.colors.primary
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(parsedColor)
+                            .then(
+                                if (color == c) Modifier.border(2.dp, Color.White, CircleShape)
+                                else Modifier,
+                            )
+                            .clickable { color = c },
+                    )
+                }
+            }
 
             if (!isEditing) {
                 Spacer(modifier = Modifier.height(12.dp))
