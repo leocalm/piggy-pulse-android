@@ -40,7 +40,7 @@ class DashboardRepository @Inject constructor(
                     apiClient.request { apiClient.service.getDashboardCurrentPeriod(periodId) }.getOrNull()
                 }
                 val netPosition = async {
-                    apiClient.request { apiClient.service.getDashboardNetPosition() }.getOrNull()
+                    apiClient.request { apiClient.service.getDashboardNetPosition(periodId) }.getOrNull()
                 }
                 val cashFlow = async {
                     apiClient.request { apiClient.service.getDashboardCashFlow(periodId) }.getOrNull()

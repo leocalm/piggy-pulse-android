@@ -134,7 +134,7 @@ private fun RenderWidget(
 ) {
     when (widgetId) {
         "net_position" -> dashboard.netPosition?.let {
-            NetPositionWidget(data = it, currencyCode = currencyCode)
+            NetPositionWidget(data = it, accounts = dashboard.accountSummaries, currencyCode = currencyCode)
         }
         "current_period" -> dashboard.currentPeriod?.let {
             CurrentPeriodWidget(data = it, currencyCode = currencyCode)
