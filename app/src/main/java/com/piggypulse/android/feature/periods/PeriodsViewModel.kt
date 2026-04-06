@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.piggypulse.android.core.model.BudgetPeriod
 import com.piggypulse.android.core.model.CreatePeriodRequest
+import com.piggypulse.android.core.model.CreateScheduleRequest
 import com.piggypulse.android.core.model.PeriodScheduleResponse
 import com.piggypulse.android.core.repository.PeriodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,9 @@ class PeriodsViewModel @Inject constructor(
     private val _showCreateForm = MutableStateFlow(false)
     val showCreateForm: StateFlow<Boolean> = _showCreateForm.asStateFlow()
 
+    private val _showScheduleForm = MutableStateFlow(false)
+    val showScheduleForm: StateFlow<Boolean> = _showScheduleForm.asStateFlow()
+
     private var loadJob: Job? = null
 
     fun load() {
@@ -46,6 +50,9 @@ class PeriodsViewModel @Inject constructor(
     fun openCreateForm() { _showCreateForm.value = true }
     fun closeForm() { _showCreateForm.value = false }
 
+    fun openScheduleForm() { _showScheduleForm.value = true }
+    fun closeScheduleForm() { _showScheduleForm.value = false }
+
     fun createManualEndDate(name: String, startDate: String, endDate: String) {
         viewModelScope.launch {
             repository.create(
@@ -56,6 +63,32 @@ class PeriodsViewModel @Inject constructor(
                     manualEndDate = endDate,
                 ),
             ).onSuccess { closeForm(); load() }
+        }
+    }
+
+    fun saveSchedule(request: CreateScheduleRequest) {
+        viewModelScope.launch {
+            val isNew = _schedule.value == null || _schedule.value?.scheduleType != "automatic"
+            val result = if (isNew) {
+                repository.createSchedule(request)
+            } else {
+                repository.updateSchedule(request)
+            }
+            result.onSuccess {
+                _schedule.value = it
+                closeScheduleForm()
+                load()
+            }
+        }
+    }
+
+    fun deleteSchedule() {
+        viewModelScope.launch {
+            repository.deleteSchedule().onSuccess {
+                _schedule.value = null
+                closeScheduleForm()
+                load()
+            }
         }
     }
 

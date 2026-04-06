@@ -4,7 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PeriodScheduleResponse(
-    val schedule: String, // "manual" or "automatic"
+    val id: String? = null,
+    val scheduleType: String, // "manual" or "automatic"
+    val recurrenceMethod: String? = null,
     val startDayOfTheMonth: Int? = null,
     val periodDuration: Int? = null,
     val durationUnit: String? = null,
@@ -12,7 +14,19 @@ data class PeriodScheduleResponse(
     val saturdayPolicy: String? = null,
     val sundayPolicy: String? = null,
     val namePattern: String? = null,
-    val recurrenceMethod: String? = null,
+)
+
+@Serializable
+data class CreateScheduleRequest(
+    val scheduleType: String = "automatic",
+    val recurrenceMethod: String,
+    val startDayOfTheMonth: Int,
+    val periodDuration: Int,
+    val durationUnit: String,
+    val saturdayPolicy: String,
+    val sundayPolicy: String,
+    val namePattern: String,
+    val generateAhead: Int,
 )
 
 @Serializable
