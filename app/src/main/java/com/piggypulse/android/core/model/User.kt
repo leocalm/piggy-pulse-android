@@ -50,14 +50,8 @@ data class ForgotPasswordResponse(
 )
 
 @Serializable
-data class RefreshRequest(
-    val refreshToken: String,
-)
-
-@Serializable
 data class RefreshResponse(
-    val accessToken: String,
-    val expiresIn: Int,
+    val token: String,
 )
 
 @Serializable
