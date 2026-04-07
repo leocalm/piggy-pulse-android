@@ -1,7 +1,6 @@
 package com.piggypulse.android.core.network
 
 import com.piggypulse.android.BuildConfig
-import com.piggypulse.android.core.model.RefreshRequest
 import com.piggypulse.android.core.model.RefreshResponse
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
@@ -54,19 +53,20 @@ class TokenRefreshAuthenticator @Inject constructor(
             return null
         }
 
-        tokenManager.setTokens(refreshed.accessToken)
+        tokenManager.setTokens(accessToken = refreshed.token, refreshToken = refreshed.token)
 
         return response.request.newBuilder()
-            .header("Authorization", "Bearer ${refreshed.accessToken}")
+            .header("Authorization", "Bearer ${refreshed.token}")
             .header("X-Retry-After-Refresh", "true")
             .build()
     }
 
-    private fun performRefresh(refreshToken: String): RefreshResponse? {
-        val body = json.encodeToString(RefreshRequest.serializer(), RefreshRequest(refreshToken))
+    private fun performRefresh(currentToken: String): RefreshResponse? {
+        // The refresh endpoint uses bearer auth (current token), no request body
         val request = Request.Builder()
             .url("${BuildConfig.API_BASE_URL}/auth/refresh")
-            .post(body.toRequestBody("application/json".toMediaType()))
+            .post("".toRequestBody("application/json".toMediaType()))
+            .header("Authorization", "Bearer $currentToken")
             .build()
 
         val response = refreshClient.newCall(request).execute()

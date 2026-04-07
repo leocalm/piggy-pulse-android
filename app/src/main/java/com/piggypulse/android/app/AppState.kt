@@ -193,7 +193,9 @@ class AppState @Inject constructor(
         }
 
         val token = response.token ?: return LoginResult.Error("No token received")
-        tokenManager.setTokens(token)
+        // Save the same token as both access and refresh (API uses single token,
+        // refresh endpoint sends it back to get a new one — matching iOS behavior)
+        tokenManager.setTokens(accessToken = token, refreshToken = token)
         _currentUser.value = response.user
         loadPeriods()
 
