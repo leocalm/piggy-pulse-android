@@ -94,7 +94,13 @@ jobs:
           api-level: 34
           arch: x86_64
           target: google_apis
-          script: ./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.piggypulse.android.e2e.tests.StructureTests,com.piggypulse.android.e2e.tests.TransactionTests
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+            ./gradlew connectedAndroidTest \
+              -Pandroid.testInstrumentationRunnerArguments.class=com.piggypulse.android.e2e.tests.AuthTests,com.piggypulse.android.e2e.tests.StructureTests,com.piggypulse.android.e2e.tests.TransactionTests \
+              -Pandroid.testInstrumentationRunnerArguments.useTestStorageService=false
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
