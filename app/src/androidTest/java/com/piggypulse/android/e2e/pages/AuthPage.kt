@@ -17,7 +17,7 @@ class AuthPage(private val rule: ComposeTestRule) {
 
     fun expectDashboardOrOnboarding() {
         rule.waitUntil(timeoutMillis = 15_000) {
-            rule.onAllNodesWithTag("dashboard-nav-item").fetchSemanticsNodes().isNotEmpty() ||
+            rule.onAllNodesWithTag("nav-dashboardtab").fetchSemanticsNodes().isNotEmpty() ||
                 rule.onAllNodesWithTag("onboarding-complete").fetchSemanticsNodes().isNotEmpty()
         }
     }
@@ -34,7 +34,7 @@ class AuthPage(private val rule: ComposeTestRule) {
 
     fun logout() {
         // Navigate to More tab
-        rule.onNodeWithTag("more-nav-item").performClick()
+        rule.onNodeWithTag("nav-moretab").performClick()
         rule.waitForIdle()
         // Tap logout
         rule.onNodeWithTag("logout-button").performClick()

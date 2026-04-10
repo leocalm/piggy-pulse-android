@@ -10,7 +10,7 @@ import androidx.compose.ui.test.performTextInput
 class CategoriesPage(private val rule: ComposeTestRule) {
 
     fun navigateTo() {
-        rule.onNodeWithTag("more-nav-item").performClick()
+        rule.onNodeWithTag("nav-moretab").performClick()
         rule.waitForIdle()
         rule.onNodeWithTag("more-categories").performClick()
         rule.waitForIdle()

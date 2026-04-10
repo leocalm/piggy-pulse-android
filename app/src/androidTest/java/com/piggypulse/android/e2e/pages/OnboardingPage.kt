@@ -17,7 +17,7 @@ class OnboardingPage(private val rule: ComposeTestRule) {
 
     fun expectDashboard() {
         rule.waitUntil(timeoutMillis = 15_000) {
-            rule.onAllNodes(androidx.compose.ui.test.hasTestTag("dashboard-nav-item"))
+            rule.onAllNodes(androidx.compose.ui.test.hasTestTag("nav-dashboardtab"))
                 .fetchSemanticsNodes().isNotEmpty()
         }
     }

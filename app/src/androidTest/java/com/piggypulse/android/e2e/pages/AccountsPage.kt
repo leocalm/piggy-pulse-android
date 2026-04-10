@@ -10,7 +10,7 @@ import androidx.compose.ui.test.performTextInput
 class AccountsPage(private val rule: ComposeTestRule) {
 
     fun navigateTo() {
-        rule.onNodeWithTag("accounts-nav-item").performClick()
+        rule.onNodeWithTag("nav-accountstab").performClick()
         rule.waitForIdle()
     }
 

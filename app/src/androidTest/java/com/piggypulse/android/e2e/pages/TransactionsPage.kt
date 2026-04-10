@@ -10,7 +10,7 @@ import androidx.compose.ui.test.performTextInput
 class TransactionsPage(private val rule: ComposeTestRule) {
 
     fun navigateTo() {
-        rule.onNodeWithTag("transactions-nav-item").performClick()
+        rule.onNodeWithTag("nav-transactionstab").performClick()
         rule.waitForIdle()
     }
 
