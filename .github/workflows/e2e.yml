@@ -70,6 +70,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          ls -la /dev/kvm || echo "KVM not available"
 
       - name: Setup JDK
         uses: actions/setup-java@v4
@@ -100,10 +101,14 @@ jobs:
           api-level: 34
           arch: x86_64
           target: google_apis
+          force-avd-creation: false
+          emulator-boot-timeout: 600
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+            adb wait-for-device
+            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 2; done;' || true
+            sleep 10
             ./gradlew connectedAndroidTest \
               -Pandroid.testInstrumentationRunnerArguments.class=com.piggypulse.android.e2e.tests.AuthTests,com.piggypulse.android.e2e.tests.StructureTests,com.piggypulse.android.e2e.tests.TransactionTests \
               -Pandroid.testInstrumentationRunnerArguments.useTestStorageService=false
