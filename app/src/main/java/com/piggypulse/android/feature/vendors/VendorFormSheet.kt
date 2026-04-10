@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.CreateVendorRequest
 import com.piggypulse.android.core.model.UpdateVendorRequest
@@ -57,7 +58,7 @@ fun VendorFormSheet(
                 value = name,
                 onValueChange = { name = it },
                 label = "Name",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("vendor-name-input"),
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -80,7 +81,7 @@ fun VendorFormSheet(
                         onSave(CreateVendorRequest(name, desc))
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("vendor-form-submit"),
                 enabled = name.length >= 3,
             )
         }

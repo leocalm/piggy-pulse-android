@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.DashboardCurrentPeriod
 import com.piggypulse.android.core.util.CurrencyFormatter
@@ -40,6 +41,7 @@ fun CurrentPeriodWidget(
             currencyCode = currencyCode,
             style = MaterialTheme.typography.headlineSmall,
             color = PpTheme.colors.textPrimary,
+            modifier = Modifier.testTag("dashboard-spent-value"),
         )
         if (data.target > 0) {
             Text(

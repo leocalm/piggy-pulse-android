@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.CreateTransactionRequest
@@ -120,6 +121,7 @@ fun TransactionFormSheet(
                         }
                     },
                     colors = SwitchDefaults.colors(checkedTrackColor = PpTheme.colors.primary),
+                    modifier = Modifier.testTag("transaction-transfer-toggle"),
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -129,7 +131,7 @@ fun TransactionFormSheet(
                 value = amountText,
                 onValueChange = { amountText = it },
                 label = "Amount",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("transaction-amount-input"),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -139,7 +141,7 @@ fun TransactionFormSheet(
                 value = description,
                 onValueChange = { description = it },
                 label = "Description",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("transaction-description-input"),
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -158,6 +160,7 @@ fun TransactionFormSheet(
                 options = filterOptions.accounts.map { it.id to it.name },
                 selectedId = selectedFromAccountId,
                 onSelect = { selectedFromAccountId = it },
+                modifier = Modifier.testTag("transaction-account-select"),
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -171,6 +174,7 @@ fun TransactionFormSheet(
                             .map { it.id to it.name },
                     selectedId = selectedToAccountId ?: "",
                     onSelect = { selectedToAccountId = it.ifEmpty { null } },
+                    modifier = Modifier.testTag("transaction-to-account-select"),
                 )
             } else {
                 // Category (non-transfer only, excludes "Transfer")
@@ -179,6 +183,7 @@ fun TransactionFormSheet(
                     options = visibleCategories.map { it.id to "${it.icon} ${it.name}" },
                     selectedId = selectedCategoryId,
                     onSelect = { selectedCategoryId = it },
+                    modifier = Modifier.testTag("transaction-category-select"),
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -237,7 +242,7 @@ fun TransactionFormSheet(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("transaction-form-submit"),
                 enabled = canSave,
             )
 
@@ -260,6 +265,7 @@ private fun OptionDropdown(
     options: List<Pair<String, String>>,
     selectedId: String?,
     onSelect: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val selectedLabel = options.firstOrNull { it.first == selectedId }?.second ?: ""
@@ -267,6 +273,7 @@ private fun OptionDropdown(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it },
+        modifier = modifier,
     ) {
         PpTextField(
             value = selectedLabel,

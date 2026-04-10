@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.AccountSummary
@@ -89,7 +90,7 @@ fun AccountFormSheet(
                 value = name,
                 onValueChange = { name = it },
                 label = "Name",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("account-name-input"),
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -169,7 +170,7 @@ fun AccountFormSheet(
                     value = initialBalanceText,
                     onValueChange = { initialBalanceText = it },
                     label = "Initial balance",
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("account-balance-input"),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 )
             }
@@ -205,7 +206,7 @@ fun AccountFormSheet(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("account-form-submit"),
                 enabled = name.isNotBlank() && name.length >= 3,
             )
         }

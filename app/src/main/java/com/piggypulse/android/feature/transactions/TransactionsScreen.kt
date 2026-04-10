@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.piggypulse.android.core.model.Transaction
@@ -113,6 +114,7 @@ fun TransactionsScreen(
                 onClick = { viewModel.openCreateForm() },
                 containerColor = PpTheme.colors.primary,
                 contentColor = Color.White,
+                modifier = Modifier.testTag("transactions-add-button"),
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add transaction")
             }
