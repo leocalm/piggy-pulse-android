@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -88,7 +89,7 @@ fun LoginScreen(
                     value = email,
                     onValueChange = { email = it; errorMessage = null },
                     label = "Email",
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("login-email"),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next,
@@ -103,7 +104,7 @@ fun LoginScreen(
                     value = password,
                     onValueChange = { password = it; errorMessage = null },
                     label = "Password",
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("login-password"),
                     imeAction = ImeAction.Done,
                     onDone = {
                         focusManager.clearFocus()
@@ -117,6 +118,7 @@ fun LoginScreen(
                         text = errorMessage!!,
                         color = PpTheme.colors.destructive,
                         style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.testTag("login-error"),
                     )
                 }
 
@@ -125,7 +127,7 @@ fun LoginScreen(
                 PpButton(
                     text = if (isLoading) "Signing in..." else "Sign in",
                     onClick = { doLogin() },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("login-submit"),
                     enabled = email.isNotBlank() && password.isNotBlank() && !isLoading,
                 )
 
@@ -137,7 +139,10 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                TextButton(onClick = onNavigateToRegister) {
+                TextButton(
+                    onClick = onNavigateToRegister,
+                    modifier = Modifier.testTag("register-link"),
+                ) {
                     Text("Don't have an account? ", color = PpTheme.colors.textSecondary)
                     Text("Sign up", color = PpTheme.colors.primary)
                 }

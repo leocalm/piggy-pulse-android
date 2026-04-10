@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.AccountSummary
 import com.piggypulse.android.core.model.DashboardNetPosition
@@ -46,6 +47,7 @@ fun NetPositionWidget(
             currencyCode = currencyCode,
             style = MaterialTheme.typography.headlineMedium,
             color = PpTheme.colors.textPrimary,
+            modifier = Modifier.testTag("dashboard-net-position-value"),
         )
 
         // Period change

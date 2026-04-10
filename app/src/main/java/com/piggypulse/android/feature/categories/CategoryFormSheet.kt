@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.core.model.CategoryListItem
@@ -89,7 +90,7 @@ fun CategoryFormSheet(
                 onValueChange = { name = it },
                 label = "Name",
                 placeholder = "e.g. Groceries",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("category-name-input"),
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -207,7 +208,7 @@ fun CategoryFormSheet(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("category-form-submit"),
                 enabled = name.length >= 3,
             )
         }

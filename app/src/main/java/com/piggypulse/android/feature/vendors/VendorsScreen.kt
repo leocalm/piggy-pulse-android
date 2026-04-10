@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.piggypulse.android.core.model.VendorSummary
@@ -83,6 +84,7 @@ fun VendorsScreen(
                 onClick = { viewModel.openCreateForm() },
                 containerColor = PpTheme.colors.primary,
                 contentColor = Color.White,
+                modifier = Modifier.testTag("vendors-add-button"),
             ) { Icon(Icons.Default.Add, contentDescription = "Add vendor") }
         },
     ) { innerPadding ->

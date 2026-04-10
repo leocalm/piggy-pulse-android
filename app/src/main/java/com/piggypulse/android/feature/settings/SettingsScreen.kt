@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.piggypulse.android.app.AppState
 import com.piggypulse.android.design.component.PpCard
@@ -215,6 +216,7 @@ fun SettingsScreen(
                 PpDestructiveButton(
                     text = "Logout",
                     onClick = { appState.logout() },
+                    modifier = Modifier.testTag("settings-logout"),
                 )
                 Spacer(modifier = Modifier.height(32.dp))
             }

@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Store
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.testTag
 import com.piggypulse.android.app.AppState
 import com.piggypulse.android.design.component.PpCard
 import com.piggypulse.android.design.component.PpDestructiveButton
@@ -103,6 +104,7 @@ fun MainScaffold(
                             unselectedTextColor = PpTheme.colors.textTertiary,
                             indicatorColor = PpTheme.colors.primary.copy(alpha = 0.12f),
                         ),
+                        modifier = Modifier.testTag("nav-${item.name.lowercase()}"),
                     )
                 }
             }
@@ -243,6 +245,7 @@ private fun MoreScreen(
                 icon = Icons.Default.Category,
                 label = "Categories",
                 onClick = { onNavigate(Route.Categories) },
+                modifier = Modifier.testTag("more-categories"),
             )
         }
         item {
@@ -250,6 +253,7 @@ private fun MoreScreen(
                 icon = Icons.Default.Store,
                 label = "Vendors",
                 onClick = { onNavigate(Route.Vendors) },
+                modifier = Modifier.testTag("more-vendors"),
             )
         }
         item {
@@ -278,6 +282,7 @@ private fun MoreScreen(
                 icon = Icons.Default.Settings,
                 label = "Settings",
                 onClick = { onNavigate(Route.Settings) },
+                modifier = Modifier.testTag("more-settings"),
             )
         }
         item {
@@ -285,6 +290,7 @@ private fun MoreScreen(
             PpDestructiveButton(
                 text = "Logout",
                 onClick = onLogout,
+                modifier = Modifier.testTag("logout-button"),
             )
         }
     }
@@ -295,8 +301,9 @@ private fun MoreMenuItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    PpCard(modifier = Modifier.clickable(onClick = onClick)) {
+    PpCard(modifier = modifier.clickable(onClick = onClick)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
