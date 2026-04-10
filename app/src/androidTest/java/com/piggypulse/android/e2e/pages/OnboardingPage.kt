@@ -7,11 +7,12 @@ import androidx.compose.ui.test.performClick
 class OnboardingPage(private val rule: ComposeTestRule) {
 
     fun completeOnboarding() {
-        try {
+        // Check if onboarding is shown; if not, we're already on dashboard
+        val nodes = rule.onAllNodes(androidx.compose.ui.test.hasTestTag("onboarding-complete"))
+            .fetchSemanticsNodes()
+        if (nodes.isNotEmpty()) {
             rule.onNodeWithTag("onboarding-complete").performClick()
             rule.waitForIdle()
-        } catch (_: Exception) {
-            // Already past onboarding
         }
     }
 

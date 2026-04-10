@@ -30,6 +30,6 @@ class AccountsPage(private val rule: ComposeTestRule) {
             rule.onAllNodes(androidx.compose.ui.test.hasText(name))
                 .fetchSemanticsNodes().isNotEmpty()
         }
-        rule.onNodeWithText(name).assertIsDisplayed()
+        rule.onAllNodes(androidx.compose.ui.test.hasText(name))[0].assertIsDisplayed()
     }
 }

@@ -12,6 +12,10 @@ class CategoriesPage(private val rule: ComposeTestRule) {
     fun navigateTo() {
         rule.onNodeWithTag("nav-moretab").performClick()
         rule.waitForIdle()
+        rule.waitUntil(timeoutMillis = 10_000) {
+            rule.onAllNodes(androidx.compose.ui.test.hasTestTag("more-categories"))
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithTag("more-categories").performClick()
         rule.waitForIdle()
     }

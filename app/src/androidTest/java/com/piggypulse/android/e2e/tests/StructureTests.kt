@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.piggypulse.android.MainActivity
 import com.piggypulse.android.e2e.helpers.ApiHelper
+import com.piggypulse.android.e2e.helpers.clearAppData
 import com.piggypulse.android.e2e.pages.AccountsPage
 import com.piggypulse.android.e2e.pages.AuthPage
 import com.piggypulse.android.e2e.pages.CategoriesPage
@@ -34,6 +35,7 @@ class StructureTests {
     @Before
     fun setUp() {
         hiltRule.inject()
+        clearAppData()
         auth = AuthPage(composeRule)
         accounts = AccountsPage(composeRule)
         categories = CategoriesPage(composeRule)

@@ -2,9 +2,11 @@ package com.piggypulse.android.e2e.tests
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.piggypulse.android.MainActivity
 import com.piggypulse.android.e2e.helpers.ApiHelper
 import com.piggypulse.android.e2e.helpers.TestConfig
+import com.piggypulse.android.e2e.helpers.clearAppData
 import com.piggypulse.android.e2e.pages.AuthPage
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -28,6 +30,7 @@ class AuthTests {
     @Before
     fun setUp() {
         hiltRule.inject()
+        clearAppData()
         auth = AuthPage(composeRule)
     }
 

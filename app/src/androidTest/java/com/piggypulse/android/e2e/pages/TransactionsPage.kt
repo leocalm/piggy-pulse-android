@@ -36,21 +36,26 @@ class TransactionsPage(private val rule: ComposeTestRule) {
         if (!isTransfer) {
             rule.onNodeWithTag("transaction-category-select").performClick()
             rule.waitForIdle()
-            rule.onNodeWithText(category, substring = true).performClick()
+            // Use popup menu item — match exact text or first match in dropdown
+            // Dropdown items appear after the form fields — pick last match
+            val catNodes = rule.onAllNodes(androidx.compose.ui.test.hasText(category, substring = true))
+            catNodes[catNodes.fetchSemanticsNodes().size - 1].performClick()
             rule.waitForIdle()
         }
 
         // Select account
         rule.onNodeWithTag("transaction-account-select").performClick()
         rule.waitForIdle()
-        rule.onNodeWithText(account, substring = true).performClick()
+        val acctNodes = rule.onAllNodes(androidx.compose.ui.test.hasText(account, substring = true))
+        acctNodes[acctNodes.fetchSemanticsNodes().size - 1].performClick()
         rule.waitForIdle()
 
         // Select to-account for transfers
         if (isTransfer && toAccount != null) {
             rule.onNodeWithTag("transaction-to-account-select").performClick()
             rule.waitForIdle()
-            rule.onNodeWithText(toAccount, substring = true).performClick()
+            val toNodes = rule.onAllNodes(androidx.compose.ui.test.hasText(toAccount, substring = true))
+            toNodes[toNodes.fetchSemanticsNodes().size - 1].performClick()
             rule.waitForIdle()
         }
 
