@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.PiggyPulse" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.PiggyPulse.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0A0E17</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/piggy_coin_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.PiggyPulse</item>
+    </style>
 </resources>

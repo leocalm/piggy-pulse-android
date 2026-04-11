@@ -26,6 +26,9 @@ navigationCompose = "2.9.0"
 # Security
 securityCrypto = "1.1.0-alpha06"
 
+# Splash
+splashscreen = "1.0.1"
+
 # Charts
 vico = "2.1.2"
 
@@ -72,6 +75,9 @@ retrofit-kotlinx-serialization = { group = "com.jakewharton.retrofit", name = "r
 
 # Security
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+
+# Splash
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
 # Charts
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
