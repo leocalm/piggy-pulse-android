@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:18080/v2\"")
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000/v2\"")
         }
         release {
             isMinifyEnabled = true
@@ -47,6 +47,7 @@ android {
 dependencies {
     // AndroidX Core
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
