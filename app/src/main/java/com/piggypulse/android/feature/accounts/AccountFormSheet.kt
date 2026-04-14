@@ -94,15 +94,25 @@ fun AccountFormSheet(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Account type dropdown
+            // Account type dropdown.
+            //
+            // Account type is immutable after creation. The backend enforces this
+            // via a BEFORE UPDATE trigger on the `account` table (piggy-pulse-api
+            // migration 20260327000004) because account_type is snapshotted by
+            // the transaction aggregate trigger at insert time to classify
+            // Transfer-to-Allowance spending. Editing it would silently drift the
+            // materialized aggregate tables. In edit mode we keep the field
+            // visible but gate onExpandedChange so the dropdown never opens and
+            // disable the text field so it reads as non-interactive.
             ExposedDropdownMenuBox(
                 expanded = typeExpanded,
-                onExpandedChange = { typeExpanded = it },
+                onExpandedChange = { if (!isEditing) typeExpanded = it },
             ) {
                 PpTextField(
                     value = selectedType.label,
                     onValueChange = {},
                     label = "Type",
+                    enabled = !isEditing,
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
